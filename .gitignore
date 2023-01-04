@@ -1,0 +1,9 @@
+.idea
+build
+build-sdk
+cdk.out
+node_modules
+template.yaml
+generated
+*.tgz
+.DS_Store
