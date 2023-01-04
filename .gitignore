@@ -2,7 +2,6 @@
 build
 build-sdk
 cdk.out
-node_modules
 template.yaml
 generated
 *.tgz
