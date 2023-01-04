@@ -10,4 +10,6 @@ outputs:
     description: 'The time we greeted you'
 runs:
   using: 'node16'
+  pre: 'setup.js'
   main: 'index.js'
+  post: 'cleanup.js'
