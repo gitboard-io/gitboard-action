@@ -1,12 +1,9 @@
 {
   "compilerOptions": {
-    "module": "es2022",
-    "target": "es2022",
-    "outDir": "build",
-    "sourceMap": false,
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
+    "target": "ES6",
+    "module": "CommonJS",
     "esModuleInterop": true
   },
-  "include": ["index.ts"]
+  "include": ["index.ts"],
+  "exclude": ["node_modules"]
 }
