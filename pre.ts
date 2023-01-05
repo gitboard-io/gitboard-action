@@ -7,14 +7,8 @@ async function run() {
   try {
     const username = core.getInput('username');
     const key = core.getInput('key');
-    const githubToken = core.getInput('github-token');
-    const status = core.getInput('status');
-    console.log("Running pre script", username, key, githubToken, status);
     const gitboardApiSdk =  new GitboardApiSdk(authenticatedAxios(`https://api.gitboard.io`, key))
-    const response = await gitboardApiSdk.upsertJob({ username }, { username, id: `${github.context.payload.repository.full_name}-${github.context.job}`, url: github.context.payload.repository.html_url, name: github.context.payload.repository.full_name, access: github.context.payload["private"] ? "private" : "public", status: "in-progress", updated: github.context.payload.repository["updated_at"] });
-    console.log("upsertJob response", response);
-    const context = JSON.stringify(github.context, undefined, 2);
-    console.log(`The event context: ${context}`);
+    await gitboardApiSdk.upsertJob({ username }, { username, id: `${github.context.payload.repository.full_name}-${github.context.job}`, url: github.context.payload.repository.html_url, name: github.context.payload.repository.full_name, access: github.context.payload["private"] ? "private" : "public", status: "pending", updated: github.context.payload.repository["updated_at"] });
   }
   catch (error) {
     core.setFailed(error.message);

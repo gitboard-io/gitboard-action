@@ -14514,18 +14514,9 @@ function run() {
         try {
             const username = core.getInput('username');
             const key = core.getInput('key');
-            const githubToken = core.getInput('github-token');
             const status = core.getInput('status');
-            console.log("Running post script", username, key, githubToken, status);
             const gitboardApiSdk = new gitboard_api_1.GitboardApiSdk(authenticatedAxios(`https://api.gitboard.io`, key));
-            const response = yield gitboardApiSdk.upsertJob({ username }, { username, id: `${github.context.payload.repository.full_name}-${github.context.job}`, url: github.context.payload.repository.html_url, name: github.context.payload.repository.full_name, access: github.context.payload["private"] ? "private" : "public", status: "success", updated: github.context.payload.repository["updated_at"] });
-            console.log("upsertJob response", response);
-            const context = JSON.stringify(github.context, undefined, 2);
-            console.log(`The event context: ${context}`);
-            const step = JSON.stringify(github.context["step"], undefined, 2);
-            console.log(`The event context: ${step}`);
-            const githubJson = JSON.stringify(github, undefined, 2);
-            console.log(`The event context: ${githubJson}`);
+            yield gitboardApiSdk.upsertJob({ username }, { username, id: `${github.context.payload.repository.full_name}-${github.context.job}`, url: github.context.payload.repository.html_url, name: github.context.payload.repository.full_name, access: github.context.payload["private"] ? "private" : "public", status: status, updated: github.context.payload.repository["updated_at"] });
         }
         catch (error) {
             core.setFailed(error.message);
