@@ -4,5 +4,6 @@ build-sdk
 cdk.out
 template.yaml
 generated
+node_modules
 *.tgz
 .DS_Store
