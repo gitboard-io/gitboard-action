@@ -7,6 +7,13 @@ inputs:
   key:
     description: 'gitboard.io account key'
     required: true
+  github-token:
+    description: 'GitHub token.'
+    required: false
+    default: ${{ github.token }}
+  status:
+    description: 'Job status, auto use github.job.status'
+    default: ${{ job.status }}
 runs:
   using: 'node16'
   pre: 'pre/index.js'
