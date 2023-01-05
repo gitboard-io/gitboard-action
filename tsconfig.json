@@ -2,7 +2,6 @@
   "compilerOptions": {
     "module": "es2022",
     "target": "es2022",
-    "outDir": "build",
     "sourceMap": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,

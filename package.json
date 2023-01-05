@@ -1,14 +1,9 @@
 {
   "name": "gitboard-action",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
   "scripts": {
     "build": "ncc build index.ts"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@codeaim/gitboard-api": "^0.0.65",
     "@actions/core": "^1.10.0",
