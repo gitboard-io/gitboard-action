@@ -14514,8 +14514,10 @@ function run() {
         try {
             const username = core.getInput('username');
             const key = core.getInput('key');
+            console.log("Running pre script", username, key);
             const gitboardApiSdk = new gitboard_api_1.GitboardApiSdk(authenticatedAxios(`https://api.gitboard.io`, key));
-            yield gitboardApiSdk.upsertJob({ username }, { username, id: `${github.context.payload.repository.full_name}-${github.context.job}`, url: github.context.payload.repository.html_url, name: github.context.payload.repository.full_name, access: github.context.payload["private"] ? "private" : "public", status: "in-progress", updated: github.context.payload.repository["updated_at"] });
+            const response = yield gitboardApiSdk.upsertJob({ username }, { username, id: `${github.context.payload.repository.full_name}-${github.context.job}`, url: github.context.payload.repository.html_url, name: github.context.payload.repository.full_name, access: github.context.payload["private"] ? "private" : "public", status: "in-progress", updated: github.context.payload.repository["updated_at"] });
+            console.log("upsertJob response", response);
             const context = JSON.stringify(github.context, undefined, 2);
             console.log(`The event context: ${context}`);
         }
