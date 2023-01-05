@@ -1,12 +1,14 @@
-name: 'Hello World'
-description: 'Greet someone and record the time'
+name: 'gitboard.io'
+description: 'Provides job information to gittboard.io. gitboard.io makes GitHub Actions made visible, providing a real time build status dashboard for GitHub Actions.'
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
+  username:
+    description: 'gitboard.io account username'
     required: true
-    default: 'World'
+  key:
+    description: 'gitboard.io account key'
+    required: true
 outputs:
-  time: # id of output
+  time:
     description: 'The time we greeted you'
 runs:
   using: 'node16'
