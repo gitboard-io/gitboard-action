@@ -8,14 +8,11 @@ async function run() {
     const username = core.getInput('username');
     const key = core.getInput('key');
     const gitboardApiSdk =  new GitboardApiSdk(authenticatedAxios(`https://api.gitboard.io`, key))
-    const response = await gitboardApiSdk.getUser({ username });
-    if(response.statusCode === 200) {
-      console.log(`user`, response.result);
-    }
-    const time = (new Date()).toTimeString();
-    core.setOutput("time", time);
+    await gitboardApiSdk.upsertJob({ username }, { username, id: `${github.context.payload.repository.full_name}-${github.context.job}`, url: github.context.payload.repository.html_url, name: github.context.payload.repository.full_name, access: github.context.payload["private"] ? "private" : "public", status: "success", updated: github.context.payload.repository["updated_at"] });
     const context = JSON.stringify(github.context, undefined, 2);
     console.log(`The event context: ${context}`);
+    const step = JSON.stringify(github.context["step"], undefined, 2);
+    console.log(`The event context: ${step}`);
   }
   catch (error) {
     core.setFailed(error.message);
@@ -31,7 +28,7 @@ function authenticatedAxios(url: string, key: string): Caller {
         params: { ...queryParameters, ...multiQueryParameters },
         headers: {
           ...headers,
-          Authorization: `Bearer ${key}`
+          "X-Api-Key": `${key}`
         },
         transformResponse: [],
         ...config,

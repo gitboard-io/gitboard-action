@@ -14464,7 +14464,7 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
-/***/ 4177:
+/***/ 8621:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -14515,12 +14515,7 @@ function run() {
             const username = core.getInput('username');
             const key = core.getInput('key');
             const gitboardApiSdk = new gitboard_api_1.GitboardApiSdk(authenticatedAxios(`https://api.gitboard.io`, key));
-            const response = yield gitboardApiSdk.getUser({ username });
-            if (response.statusCode === 200) {
-                console.log(`user`, response.result);
-            }
-            const time = (new Date()).toTimeString();
-            core.setOutput("time", time);
+            yield gitboardApiSdk.upsertJob({ username }, { username, id: `${github.context.payload.repository.full_name}-${github.context.job}`, url: github.context.payload.repository.html_url, name: github.context.payload.repository.full_name, access: github.context.payload["private"] ? "private" : "public", status: "in-progress", updated: github.context.payload.repository["updated_at"] });
             const context = JSON.stringify(github.context, undefined, 2);
             console.log(`The event context: ${context}`);
         }
@@ -14532,7 +14527,7 @@ function run() {
 function authenticatedAxios(url, key) {
     return {
         call: (method, resource, path, body, pathParameters, queryParameters, multiQueryParameters, headers, config) => __awaiter(this, void 0, void 0, function* () {
-            const result = yield (0, axios_1.default)(url + path, Object.assign({ method: method, data: body, params: Object.assign(Object.assign({}, queryParameters), multiQueryParameters), headers: Object.assign(Object.assign({}, headers), { Authorization: `Bearer ${key}` }), transformResponse: [] }, config));
+            const result = yield (0, axios_1.default)(url + path, Object.assign({ method: method, data: body, params: Object.assign(Object.assign({}, queryParameters), multiQueryParameters), headers: Object.assign(Object.assign({}, headers), { "X-Api-Key": `${key}` }), transformResponse: [] }, config));
             return {
                 statusCode: result.status,
                 body: result.data,
@@ -14764,12 +14759,12 @@ class GitboardApiSdk {
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
-    async createJob(params, headers = {}) {
+    async upsertJob(params, body, headers = {}) {
         const resource = '/job/{username}';
         const path = `/job/${params.username}`;
-        const result = await this.caller.call('POST', resource, path, undefined, params, {}, {}, headers);
-        if (result.statusCode === 201) {
-            return { statusCode: 201, headers: result.headers, result: JSON.parse(result.body) };
+        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), params, {}, {}, headers);
+        if (result.statusCode === 200) {
+            return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
@@ -14786,18 +14781,6 @@ class GitboardApiSdk {
         const resource = '/job/{username}/{id}';
         const path = `/job/${params.username}/${params.id}`;
         const result = await this.caller.call('GET', resource, path, undefined, params, {}, {}, headers);
-        if (result.statusCode === 200) {
-            return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
-        }
-        else if (result.statusCode === 404) {
-            return { statusCode: 404, headers: result.headers, result: JSON.parse(result.body) };
-        }
-        throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
-    }
-    async updateJob(params, headers = {}) {
-        const resource = '/job/{username}/{id}';
-        const path = `/job/${params.username}/${params.id}`;
-        const result = await this.caller.call('POST', resource, path, undefined, params, {}, {}, headers);
         if (result.statusCode === 200) {
             return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
         }
@@ -14910,7 +14893,7 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __nccwpck_require__(4177);
+/******/ 	var __webpack_exports__ = __nccwpck_require__(8621);
 /******/ 	module.exports = __webpack_exports__;
 /******/ 	
 /******/ })()

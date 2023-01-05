@@ -7,9 +7,8 @@ inputs:
   key:
     description: 'gitboard.io account key'
     required: true
-outputs:
-  time:
-    description: 'The time we greeted you'
 runs:
   using: 'node16'
-  main: 'build/index.js'
+  pre: 'pre/index.js'
+  main: 'main/index.js'
+  post: 'post/index.js'

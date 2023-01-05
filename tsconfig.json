@@ -4,6 +4,7 @@
     "module": "CommonJS",
     "esModuleInterop": true
   },
-  "include": ["index.ts"],
+  "include": [
+    "main.ts", "post.ts", "pre.ts"],
   "exclude": ["node_modules"]
 }
