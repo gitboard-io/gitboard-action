@@ -3,7 +3,7 @@
     "module": "es2022",
     "target": "es2022",
     "outDir": "build",
-    "sourceMap": true,
+    "sourceMap": false,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true
