@@ -11,8 +11,8 @@ inputs:
     description: 'job status'
     default: ${{ job.status }}
   steps:
-    description: 'job steps'
-    default: ${{ steps }}
+    description: 'job'
+    default: ${{ job }}
 runs:
   using: 'node16'
   pre: 'pre/index.js'
