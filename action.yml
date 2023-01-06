@@ -12,7 +12,7 @@ inputs:
     default: ${{ job.status }}
   job:
     description: 'job'
-    default: ${{ fromJSON(job) }}
+    default: ${{ toJSON(job) }}
 runs:
   using: 'node16'
   pre: 'pre/index.js'
