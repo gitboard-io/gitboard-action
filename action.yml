@@ -13,6 +13,9 @@ inputs:
   job:
     description: 'job'
     default: ${{ toJSON(job) }}
+  steps:
+    description: 'steps'
+    default: ${{ toJSON(steps) }}
 runs:
   using: 'node16'
   pre: 'pre/index.js'

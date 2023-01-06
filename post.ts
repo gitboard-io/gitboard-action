@@ -10,6 +10,8 @@ async function run() {
     const status = core.getInput('status');
     const job = core.getInput('job');
     console.log(job);
+    const steps = core.getInput('steps');
+    console.log(steps);
     const gitboardApiSdk =  new GitboardApiSdk(authenticatedAxios(`https://api.gitboard.io`, key))
     await gitboardApiSdk.upsertJob({ username }, { username, id: `${github.context.payload.repository.full_name}-${github.context.job}`, url: github.context.payload.repository.html_url, name: github.context.payload.repository.full_name, access: github.context.payload["private"] ? "private" : "public", status: status, updated: github.context.payload.repository["updated_at"], steps: [] });
   }
