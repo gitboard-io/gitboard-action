@@ -1,6 +1,6 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
-import {Caller, GitboardApiSdk} from "@codeaim/gitboard-api";
+import {Caller, GitboardApiSdk, Step} from "@codeaim/gitboard-api";
 import axios from "axios";
 
 async function run() {
@@ -8,8 +8,12 @@ async function run() {
     const username = core.getInput('username');
     const key = core.getInput('key');
     const status = core.getInput('status');
+    const stepsInput = core.getInput('steps');
+    console.log(stepsInput);
+    const steps = Object.keys(stepsInput).map(stepId => ({ title: stepId, status: stepsInput[stepId].outcome }) as Step)
+    console.log(steps);
     const gitboardApiSdk =  new GitboardApiSdk(authenticatedAxios(`https://api.gitboard.io`, key))
-    await gitboardApiSdk.upsertJob({ username }, { username, id: `${github.context.payload.repository.full_name}-${github.context.job}`, url: github.context.payload.repository.html_url, name: github.context.payload.repository.full_name, access: github.context.payload["private"] ? "private" : "public", status: status, updated: github.context.payload.repository["updated_at"] });
+    await gitboardApiSdk.upsertJob({ username }, { username, id: `${github.context.payload.repository.full_name}-${github.context.job}`, url: github.context.payload.repository.html_url, name: github.context.payload.repository.full_name, access: github.context.payload["private"] ? "private" : "public", status: status, updated: github.context.payload.repository["updated_at"], steps: steps });
   }
   catch (error) {
     core.setFailed(error.message);
