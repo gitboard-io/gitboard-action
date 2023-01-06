@@ -10,9 +10,9 @@ inputs:
   status:
     description: 'job status'
     default: ${{ job.status }}
-  steps:
+  job:
     description: 'job'
-    default: ${{ job }}
+    default: ${{ fromJSON(job) }}
 runs:
   using: 'node16'
   pre: 'pre/index.js'
