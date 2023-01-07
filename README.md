@@ -1,23 +1,26 @@
-# Hello world javascript action
+# gitboard.io action
 
-This action prints "Hello World" or "Hello" + the name of a person to greet to the log.
+[gitboard.io](https://gitboard.io/) a real time build status dashboard for GitHub Actions.
+This action reports a jobs status to the gitboard.io api which is then reflected on gitboard.io.
+Simply [login to gitboard.io](https://gitboard.io/login) using your github account to access your free build status dashboard. 
 
 ## Inputs
 
-### `who-to-greet`
+### `username`
 
-**Required** The name of the person to greet. Default `"World"`.
+**Required** -  gitboard.io username, dictates which gitboard.io account will reflect the job status. A users gitboard.io username can be found at https://gitboard.io/profile.
 
-## Outputs
+### `key`
 
-### `time`
-
-The time we greeted you.
+**Required** -  gitboard.io users api key, authenticates the request to the gitboard.io api. This should be kept secret, we recommend storing this in a GitHub secret. A users gitboard.io api key can be found at https://gitboard.io/profile
 
 ## Example usage
 
+Update any GitHub Action job to include the following step, replacing the values with those provided on your [gitboard.io profile](https://gitboard.io/profile):
+
 ```yaml
-uses: actions/hello-world-javascript-action@v1.1
+uses: gitboard-io/gitboard-action@v1.0
 with:
-  who-to-greet: 'Mona the Octocat'
+  username: # <replace-with-gitboard.io-username>
+  key: # <replace-with-gitboard.io-api-key>
 ```
