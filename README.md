@@ -24,3 +24,5 @@ with:
   username: # <replace-with-gitboard.io-username>
   key: # <replace-with-gitboard.io-api-key>
 ```
+
+At gitboard.io we store our inputs as Organisation Actions secrets to enable easy addition and updating of this step across our organisations repositories. 
