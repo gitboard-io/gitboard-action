@@ -2,7 +2,7 @@ name: 'Update gitboard.io Dashboard'
 description: 'Sends job status information to gittboard.io. gitboard.io makes GitHub Actions visible, providing a build status dashboard.'
 branding:
   icon: grid
-  color: gray-dark
+  color: green
 inputs:
   username:
     description: 'gitboard.io account username'
