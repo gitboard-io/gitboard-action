@@ -8,7 +8,8 @@ async function run() {
     const username = core.getInput('username');
     const key = core.getInput('key');
     const gitboardApiSdk =  new GitboardApiSdk(authenticatedAxios(`https://api.gitboard.io`, key))
-    await gitboardApiSdk.upsertJob({ username }, { username, id: `${github.context.payload.repository.full_name}-${github.context.job}`, url: github.context.payload.repository.html_url, name: github.context.payload.repository.full_name, access: github.context.payload["private"] ? "private" : "public", status: "pending", updated: github.context.payload.repository["updated_at"] });
+    await gitboardApiSdk.upsertJob({ username }, { username, id: `${github.context.payload.repository.full_name}-${github.context.job}`, url: github.context.payload.repository.html_url, name: github.context.payload.repository.full_name, access: github.context.payload["private"] ? "private" : "public", status: "pending", updated: new Date().toISOString() });
+    console.log(`View gitboard.io dashboard: https://gitboard.io/${username}/dashboard`)
   }
   catch (error) {
     core.setFailed(error.message);
