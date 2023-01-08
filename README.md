@@ -1,4 +1,4 @@
-# gitboard.io action
+# Update gitboard.io job status action
 
 [gitboard.io](https://gitboard.io/) a real time build status dashboard for GitHub Actions.
 This action reports a jobs status to the gitboard.io api which is then reflected on gitboard.io.

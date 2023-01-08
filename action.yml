@@ -1,4 +1,4 @@
-name: 'gitboard.io'
+name: 'Update gitboard.io job status'
 description: 'Sends job information to gittboard.io. gitboard.io makes GitHub Actions visible, providing a build status dashboard.'
 branding:
   icon: grid
