@@ -1,5 +1,8 @@
 name: 'gitboard.io'
-description: 'Provides job information to gittboard.io. gitboard.io makes GitHub Actions made visible, providing a real time build status dashboard for GitHub Actions.'
+description: 'Sends job information to gittboard.io. gitboard.io makes GitHub Actions visible, providing a build status dashboard.'
+branding:
+  icon: grid
+  color: gray-dark
 inputs:
   username:
     description: 'gitboard.io account username'
