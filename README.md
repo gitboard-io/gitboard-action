@@ -1,22 +1,22 @@
-# Update gitboard.io Dashboard action
+# Update GitBoard.io Dashboard action
 
-[gitboard.io](https://gitboard.io/) a real time build status dashboard for GitHub Actions.
-This action reports a jobs status to the gitboard.io api which is then reflected on gitboard.io.
-Simply [login to gitboard.io](https://gitboard.io/login) using your github account to access your free build status dashboard. 
+[GitBoard.io](https://gitboard.io/) a real time build status dashboard for GitHub Actions.
+This action reports a jobs status to the GitBoard.io api which is then reflected on GitBoard.io.
+Simply [login to GitBoard.io](https://gitboard.io/login) using your github account to access your free build status dashboard. 
 
 ## Inputs
 
 ### `username`
 
-**Required** -  gitboard.io username, dictates which gitboard.io account will reflect the job status. A users gitboard.io username can be found at https://gitboard.io/profile.
+**Required** -  GitBoard.io username, dictates which GitBoard.io account will reflect the job status. A users GitBoard.io username can be found at https://gitboard.io/profile.
 
 ### `key`
 
-**Required** -  gitboard.io users api key, authenticates the request to the gitboard.io api. This should be kept secret, we recommend storing this in a GitHub secret. A users gitboard.io api key can be found at https://gitboard.io/profile
+**Required** -  GitBoard.io users api key, authenticates the request to the GitBoard.io api. This should be kept secret, we recommend storing this in a GitHub secret. A users GitBoard.io api key can be found at https://gitboard.io/profile
 
 ## Example usage
 
-Update any GitHub Action job to include the following step, replacing the values with those provided on your [gitboard.io profile](https://gitboard.io/profile):
+Update any GitHub Action job to include the following step, replacing the values with those provided on your [GitBoard.io profile](https://gitboard.io/profile):
 
 ```yaml
 uses: gitboard-io/gitboard-action@v1.0
@@ -25,4 +25,4 @@ with:
   key: # <replace-with-gitboard.io-api-key>
 ```
 
-At gitboard.io we store our inputs as Organisation Actions secrets to enable easy addition and updating of this step across our organisations repositories. 
+At GitBoard.io we store our inputs as Organisation Actions secrets to enable easy addition and updating of this step across our organisations repositories. 

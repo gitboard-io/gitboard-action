@@ -1,14 +1,14 @@
-name: 'Update gitboard.io Dashboard'
-description: 'Sends job status information to gittboard.io. gitboard.io makes GitHub Actions visible, providing a build status dashboard.'
+name: 'Update GitBoard.io Dashboard'
+description: 'Sends job status information to GitBoard.io. GitBoard.io makes GitHub Actions visible, providing a build status dashboard.'
 branding:
   icon: grid
   color: green
 inputs:
   username:
-    description: 'gitboard.io account username'
+    description: 'GitBoard.io account username'
     required: true
   key:
-    description: 'gitboard.io account key'
+    description: 'GitBoard.io account key'
     required: true
   status:
     description: 'job status'
