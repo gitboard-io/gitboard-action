@@ -14512,15 +14512,30 @@ const axios_1 = __importDefault(__nccwpck_require__(6545));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const username = core.getInput('username');
-            const key = core.getInput('key');
+            const usernames = core
+                .getInput('username')
+                .split(',')
+                .map((x) => x.trim());
+            const keys = core
+                .getInput('key')
+                .split(',')
+                .map((x) => x.trim());
             const status = core.getInput('status');
-            const job = core.getInput('job');
-            console.log(job);
-            const steps = core.getInput('steps');
-            console.log(steps);
-            const gitboardApiSdk = new gitboard_api_1.GitboardApiSdk(authenticatedAxios(`https://api.gitboard.io`, key));
-            yield gitboardApiSdk.upsertJob({ username }, { username, id: `${github.context.payload.repository.full_name}-${github.context.job}`, url: github.context.payload.repository.html_url, name: github.context.payload.repository.full_name, access: github.context.payload["private"] ? "private" : "public", status: status, updated: github.context.payload.repository["updated_at"], steps: [] });
+            yield Promise.all(usernames.map((username, index) => __awaiter(this, void 0, void 0, function* () {
+                const key = keys[index];
+                const gitboardApiSdk = new gitboard_api_1.GitboardApiSdk(authenticatedAxios(`https://api.gitboard.io`, key));
+                yield gitboardApiSdk.upsertJob({ username }, {
+                    username,
+                    id: `${github.context.payload.repository.full_name}-${github.context.job}`,
+                    url: github.context.payload.repository.html_url,
+                    name: github.context.payload.repository.full_name,
+                    access: github.context.payload['private'] ? 'private' : 'public',
+                    status: status,
+                    updated: new Date().toISOString(),
+                    steps: [],
+                });
+                console.log(`View GitBoard.io dashboard: https://gitboard.io/${username}/dashboard`);
+            })));
         }
         catch (error) {
             core.setFailed(error.message);
@@ -14530,7 +14545,7 @@ function run() {
 function authenticatedAxios(url, key) {
     return {
         call: (method, resource, path, body, pathParameters, queryParameters, multiQueryParameters, headers, config) => __awaiter(this, void 0, void 0, function* () {
-            const result = yield (0, axios_1.default)(url + path, Object.assign({ method: method, data: body, params: Object.assign(Object.assign({}, queryParameters), multiQueryParameters), headers: Object.assign(Object.assign({}, headers), { "X-Api-Key": `${key}` }), transformResponse: [] }, config));
+            const result = yield (0, axios_1.default)(url + path, Object.assign({ method: method, data: body, params: Object.assign(Object.assign({}, queryParameters), multiQueryParameters), headers: Object.assign(Object.assign({}, headers), { 'X-Api-Key': `${key}` }), transformResponse: [] }, config));
             return {
                 statusCode: result.status,
                 body: result.data,

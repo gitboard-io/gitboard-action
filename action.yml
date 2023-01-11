@@ -5,10 +5,10 @@ branding:
   color: green
 inputs:
   username:
-    description: 'GitBoard.io account username'
+    description: 'GitBoard.io account username. Multiple account usernames can be supplied. Separate account usernames with a comma. Align corresponding account usernames and account keys.'
     required: true
   key:
-    description: 'GitBoard.io account key'
+    description: 'GitBoard.io account key, Multiple account keys can be supplied. Separate account keys with a comma. Align corresponding account usernames and account keys.'
     required: true
   status:
     description: 'job status'

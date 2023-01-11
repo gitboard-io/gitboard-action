@@ -2,7 +2,9 @@
   "name": "gitboard-action",
   "version": "1.0.0",
   "scripts": {
-    "build": "ncc build main.ts -o main && ncc build post.ts -o post && ncc build pre.ts -o pre"
+    "build": "ncc build main.ts -o main && ncc build post.ts -o post && ncc build pre.ts -o pre",
+    "format": "prettier --single-quote --trailing-comma all --check './main.ts' './pre.ts' './post.ts'",
+    "format:fix": "prettier --single-quote --trailing-comma all --write './main.ts' './pre.ts' './post.ts'"
   },
   "dependencies": {
     "@codeaim/gitboard-api": "^0.0.69",
@@ -11,6 +13,7 @@
     "axios": "^0.27.2"
   },
   "devDependencies": {
+    "prettier": "^2.8.2",
     "@vercel/ncc": "^0.36.0",
     "typescript": "^4.9.4"
   }

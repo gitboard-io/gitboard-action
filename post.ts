@@ -1,32 +1,68 @@
-import * as core from "@actions/core";
-import * as github from "@actions/github";
-import {Caller, GitboardApiSdk, Step} from "@codeaim/gitboard-api";
-import axios from "axios";
+import * as core from '@actions/core';
+import * as github from '@actions/github';
+import { Caller, GitboardApiSdk } from '@codeaim/gitboard-api';
+import axios from 'axios';
 
 async function run() {
   try {
-    const username = core.getInput('username');
-    const key = core.getInput('key');
+    const usernames = core
+      .getInput('username')
+      .split(',')
+      .map((x) => x.trim());
+    const keys = core
+      .getInput('key')
+      .split(',')
+      .map((x) => x.trim());
     const status = core.getInput('status');
-    const gitboardApiSdk =  new GitboardApiSdk(authenticatedAxios(`https://api.gitboard.io`, key))
-    await gitboardApiSdk.upsertJob({ username }, { username, id: `${github.context.payload.repository.full_name}-${github.context.job}`, url: github.context.payload.repository.html_url, name: github.context.payload.repository.full_name, access: github.context.payload["private"] ? "private" : "public", status: status, updated: new Date().toISOString(), steps: [] });
-    console.log(`View GitBoard.io dashboard: https://gitboard.io/${username}/dashboard`)
-  }
-  catch (error) {
+    await Promise.all(
+      usernames.map(async (username, index) => {
+        const key = keys[index];
+        const gitboardApiSdk = new GitboardApiSdk(
+          authenticatedAxios(`https://api.gitboard.io`, key),
+        );
+        await gitboardApiSdk.upsertJob(
+          { username },
+          {
+            username,
+            id: `${github.context.payload.repository.full_name}-${github.context.job}`,
+            url: github.context.payload.repository.html_url,
+            name: github.context.payload.repository.full_name,
+            access: github.context.payload['private'] ? 'private' : 'public',
+            status: status,
+            updated: new Date().toISOString(),
+            steps: [],
+          },
+        );
+        console.log(
+          `View GitBoard.io dashboard: https://gitboard.io/${username}/dashboard`,
+        );
+      }),
+    );
+  } catch (error) {
     core.setFailed(error.message);
   }
 }
 
 function authenticatedAxios(url: string, key: string): Caller {
   return {
-    call: async (method: any, resource: any, path: string, body: any, pathParameters: any, queryParameters: any, multiQueryParameters: any, headers: any, config: any) => {
+    call: async (
+      method: any,
+      resource: any,
+      path: string,
+      body: any,
+      pathParameters: any,
+      queryParameters: any,
+      multiQueryParameters: any,
+      headers: any,
+      config: any,
+    ) => {
       const result = await axios(url + path, {
         method: method as any,
         data: body,
         params: { ...queryParameters, ...multiQueryParameters },
         headers: {
           ...headers,
-          "X-Api-Key": `${key}`
+          'X-Api-Key': `${key}`,
         },
         transformResponse: [],
         ...config,
@@ -40,4 +76,4 @@ function authenticatedAxios(url: string, key: string): Caller {
   };
 }
 
-run()
+run();
