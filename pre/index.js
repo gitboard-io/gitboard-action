@@ -14520,6 +14520,7 @@ function run() {
                 .getInput('key')
                 .split(',')
                 .map((x) => x.trim());
+            console.log(JSON.stringify(github.context));
             yield Promise.all(usernames.map((username, index) => __awaiter(this, void 0, void 0, function* () {
                 const key = keys[index];
                 const gitboardApiSdk = new gitboard_api_1.GitboardApiSdk(authenticatedAxios(`https://api.gitboard.io`, key));
