@@ -14521,7 +14521,7 @@ function run() {
                 .split(',')
                 .map((x) => x.trim());
             const status = core.getInput('status');
-            console.log(JSON.stringify(github.context));
+            console.log(`GitHub context: ${JSON.stringify(github.context)}`);
             yield Promise.all(usernames.map((username, index) => __awaiter(this, void 0, void 0, function* () {
                 const key = keys[index];
                 const gitboardApiSdk = new gitboard_api_1.GitboardApiSdk(authenticatedAxios(`https://api.gitboard.io`, key));
@@ -14535,6 +14535,7 @@ function run() {
                     updated: new Date().toISOString(),
                     steps: [],
                 });
+                console.log(`GitHub context: ${JSON.stringify(github.context)}`);
                 console.log(`View GitBoard.io dashboard: https://gitboard.io/${username}/dashboard`);
             })));
         }

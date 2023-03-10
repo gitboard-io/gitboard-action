@@ -14,7 +14,7 @@ async function run() {
       .split(',')
       .map((x) => x.trim());
     const status = core.getInput('status');
-    console.log(JSON.stringify(github.context));
+    console.log(`GitHub context: ${JSON.stringify(github.context)}`);
     await Promise.all(
       usernames.map(async (username, index) => {
         const key = keys[index];
@@ -34,6 +34,7 @@ async function run() {
             steps: [],
           },
         );
+        console.log(`GitHub context: ${JSON.stringify(github.context)}`);
         console.log(
           `View GitBoard.io dashboard: https://gitboard.io/${username}/dashboard`,
         );

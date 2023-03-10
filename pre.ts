@@ -13,7 +13,7 @@ async function run() {
       .getInput('key')
       .split(',')
       .map((x) => x.trim());
-    console.log(JSON.stringify(github.context));
+    console.log(`GitHub context: ${JSON.stringify(github.context)}`);
     await Promise.all(
       usernames.map(async (username, index) => {
         const key = keys[index];
@@ -32,6 +32,7 @@ async function run() {
             updated: new Date().toISOString(),
           },
         );
+        console.log(`GitHub context: ${JSON.stringify(github.context)}`);
         console.log(
           `View GitBoard.io dashboard: https://gitboard.io/${username}/dashboard`,
         );
