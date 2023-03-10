@@ -13,6 +13,7 @@ async function run() {
       .getInput('key')
       .split(',')
       .map((x) => x.trim());
+    console.log(JSON.stringify(github.context));
     await Promise.all(
       usernames.map(async (username, index) => {
         const key = keys[index];

@@ -14,6 +14,7 @@ async function run() {
       .split(',')
       .map((x) => x.trim());
     const status = core.getInput('status');
+    console.log(JSON.stringify(github.context));
     await Promise.all(
       usernames.map(async (username, index) => {
         const key = keys[index];
