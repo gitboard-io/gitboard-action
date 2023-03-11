@@ -14,6 +14,7 @@ async function run() {
       .split(',')
       .map((x) => x.trim());
     const status = core.getInput('status');
+    console.log(`GitHub context: ${JSON.stringify(github.context)}`);
     await Promise.all(
       usernames.map(async (username, index) => {
         const key = keys[index];
@@ -24,15 +25,19 @@ async function run() {
           { username },
           {
             username,
-            id: `${github.context.payload.repository.full_name}-${github.context.job}`,
-            url: github.context.payload.repository.html_url,
-            name: github.context.payload.repository.full_name,
-            access: github.context.payload['private'] ? 'private' : 'public',
+            repository: github.context.payload.repository.full_name,
+            workflow: github.context.workflow,
+            job: github.context.job,
+            message: github.context.payload['head_commit'].message,
             status: status,
+            access: github.context.payload.repository.private
+              ? 'private'
+              : 'public',
             updated: new Date().toISOString(),
-            steps: [],
+            url: github.context.payload.repository.html_url,
           },
         );
+        console.log(`GitHub context: ${JSON.stringify(github.context)}`);
         console.log(
           `View GitBoard.io dashboard: https://gitboard.io/${username}/dashboard`,
         );

@@ -20,7 +20,7 @@ Update any GitHub Action job to include the following step, replacing the values
 
 ### Single User 
 ```yaml
-uses: gitboard-io/gitboard-action@v1.0
+uses: gitboard-io/gitboard-action@main
 with:
   username: # <replace-with-gitboard.io-username>
   key: # <replace-with-gitboard.io-api-key>
@@ -28,7 +28,7 @@ with:
 
 ### Multiple Users
 ```yaml
-uses: gitboard-io/gitboard-action@v1.0
+uses: gitboard-io/gitboard-action@main
 with:
   username: # <replace-with-first-gitboard.io-username>, <replace-with-second-gitboard.io-username>
   key: # <replace-with-first-gitboard.io-api-key>, <replace-with-second-gitboard.io-api-key>

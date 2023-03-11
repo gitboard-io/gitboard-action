@@ -14521,19 +14521,24 @@ function run() {
                 .split(',')
                 .map((x) => x.trim());
             const status = core.getInput('status');
+            console.log(`GitHub context: ${JSON.stringify(github.context)}`);
             yield Promise.all(usernames.map((username, index) => __awaiter(this, void 0, void 0, function* () {
                 const key = keys[index];
                 const gitboardApiSdk = new gitboard_api_1.GitboardApiSdk(authenticatedAxios(`https://api.gitboard.io`, key));
                 yield gitboardApiSdk.upsertJob({ username }, {
                     username,
-                    id: `${github.context.payload.repository.full_name}-${github.context.job}`,
-                    url: github.context.payload.repository.html_url,
-                    name: github.context.payload.repository.full_name,
-                    access: github.context.payload['private'] ? 'private' : 'public',
+                    repository: github.context.payload.repository.full_name,
+                    workflow: github.context.workflow,
+                    job: github.context.job,
+                    message: github.context.payload['head_commit'].message,
                     status: status,
+                    access: github.context.payload.repository.private
+                        ? 'private'
+                        : 'public',
                     updated: new Date().toISOString(),
-                    steps: [],
+                    url: github.context.payload.repository.html_url,
                 });
+                console.log(`GitHub context: ${JSON.stringify(github.context)}`);
                 console.log(`View GitBoard.io dashboard: https://gitboard.io/${username}/dashboard`);
             })));
         }
@@ -14708,6 +14713,42 @@ class GitboardApiSdk {
     constructor(caller) {
         this.caller = caller;
     }
+    async upsertFollower(body, headers = {}) {
+        const resource = '/follower';
+        const path = `/follower`;
+        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), {}, {}, {}, headers);
+        if (result.statusCode === 201) {
+            return { statusCode: 201, headers: result.headers, result: JSON.parse(result.body) };
+        }
+        throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
+    }
+    async sendMessage(body, headers = {}) {
+        const resource = '/message';
+        const path = `/message`;
+        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), {}, {}, {}, headers);
+        if (result.statusCode === 201) {
+            return { statusCode: 201, headers: result.headers, result: JSON.parse(result.body) };
+        }
+        throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
+    }
+    async recreateUserTables(headers = {}) {
+        const resource = '/user/recreate';
+        const path = `/user/recreate`;
+        const result = await this.caller.call('POST', resource, path, undefined, {}, {}, {}, headers);
+        if (result.statusCode === 200) {
+            return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
+        }
+        throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
+    }
+    async recreateUserTable(params, headers = {}) {
+        const resource = '/user/{username}/recreate';
+        const path = `/user/${params.username}/recreate`;
+        const result = await this.caller.call('POST', resource, path, undefined, params, {}, {}, headers);
+        if (result.statusCode === 200) {
+            return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
+        }
+        throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
+    }
     async getUsers(headers = {}) {
         const resource = '/user';
         const path = `/user`;
@@ -14811,6 +14852,18 @@ class GitboardApiSdk {
         const resource = '/job/{username}/{id}';
         const path = `/job/${params.username}/${params.id}`;
         const result = await this.caller.call('DELETE', resource, path, undefined, params, {}, {}, headers);
+        if (result.statusCode === 200) {
+            return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
+        }
+        else if (result.statusCode === 404) {
+            return { statusCode: 404, headers: result.headers, result: JSON.parse(result.body) };
+        }
+        throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
+    }
+    async getJobHistories(params, headers = {}) {
+        const resource = '/job/{username}/{id}/history';
+        const path = `/job/${params.username}/${params.id}/history`;
+        const result = await this.caller.call('GET', resource, path, undefined, params, {}, {}, headers);
         if (result.statusCode === 200) {
             return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
         }
