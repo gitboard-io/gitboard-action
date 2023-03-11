@@ -14530,7 +14530,7 @@ function run() {
                     id: `${github.context.payload.repository.full_name}-${github.context.job}`,
                     url: github.context.payload.repository.html_url,
                     name: github.context.payload.repository.full_name,
-                    access: github.context.payload['private'] ? 'private' : 'public',
+                    access: github.context.payload.repository.private ? 'private' : 'public',
                     status: status,
                     updated: new Date().toISOString(),
                     steps: [],
