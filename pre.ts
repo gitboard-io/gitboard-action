@@ -28,6 +28,7 @@ async function run() {
             workflow: github.context.workflow,
             job: github.context.job,
             runNumber: String(github.context.runNumber),
+            runId: String(github.context.runId),
             message: github.context.payload['head_commit'].message,
             status: 'pending',
             access: github.context.payload.repository.private
