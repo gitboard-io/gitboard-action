@@ -9554,10 +9554,19 @@ function run() {
                 .getInput('username')
                 .split(',')
                 .map((x) => x.trim());
+            const dashboardInput = core.getInput('dashboard');
+            const dashboards = dashboardInput
+                ? core
+                    .getInput('dashboard')
+                    .split(',')
+                    .map((x) => x.trim())
+                : ['default'];
             console.log('Reporting job status to GitBoard.io.');
             console.log(`GitHub context: ${JSON.stringify(github.context)}`);
             usernames.forEach((username) => {
-                console.log(`View GitBoard.io dashboard: https://gitboard.io/${username}/dashboard`);
+                dashboards.map((dashboard) => __awaiter(this, void 0, void 0, function* () {
+                    console.log(`View GitBoard.io dashboard: https://gitboard.io/${username}/dashboard${dashboard !== 'default' ? `/${dashboard}` : ''}`);
+                }));
             });
         }
         catch (error) {

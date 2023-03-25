@@ -13,36 +13,48 @@ async function run() {
       .getInput('key')
       .split(',')
       .map((x) => x.trim());
+    const dashboardInput = core.getInput('dashboard');
+    const dashboards = dashboardInput
+      ? core
+          .getInput('dashboard')
+          .split(',')
+          .map((x) => x.trim())
+      : ['default'];
     const status = core.getInput('status');
     console.log(`GitHub context: ${JSON.stringify(github.context)}`);
     await Promise.all(
       usernames.map(async (username, index) => {
-        const key = keys[index];
-        const gitboardApiSdk = new GitboardApiSdk(
-          authenticatedAxios(`https://api.gitboard.io`, key),
-        );
-        await gitboardApiSdk.upsertJob(
-          { username },
-          {
-            username,
-            repository: github.context.payload.repository.full_name,
-            workflow: github.context.workflow,
-            job: github.context.job,
-            runNumber: String(github.context.runNumber),
-            runId: String(github.context.runId),
-            message: github.context.payload['head_commit'].message,
-            status: status,
-            access: github.context.payload.repository.private
-              ? 'private'
-              : 'public',
-            updated: new Date().toISOString(),
-            url: github.context.payload.repository.html_url,
-          },
-        );
-        console.log(`GitHub context: ${JSON.stringify(github.context)}`);
-        console.log(
-          `View GitBoard.io dashboard: https://gitboard.io/${username}/dashboard`,
-        );
+        dashboards.map(async (dashboard) => {
+          const key = keys[index];
+          const gitboardApiSdk = new GitboardApiSdk(
+            authenticatedAxios(`https://api.gitboard.io`, key),
+          );
+          await gitboardApiSdk.upsertJob(
+            { username },
+            {
+              username,
+              repository: github.context.payload.repository.full_name,
+              workflow: github.context.workflow,
+              ...(dashboard !== 'default' ? { dashboard } : {}),
+              job: github.context.job,
+              runNumber: String(github.context.runNumber),
+              runId: String(github.context.runId),
+              message: github.context.payload['head_commit'].message,
+              status: status,
+              access: github.context.payload.repository.private
+                ? 'private'
+                : 'public',
+              updated: new Date().toISOString(),
+              url: github.context.payload.repository.html_url,
+            },
+          );
+          console.log(`GitHub context: ${JSON.stringify(github.context)}`);
+          console.log(
+            `View GitBoard.io dashboard: https://gitboard.io/${username}/dashboard${
+              dashboard !== 'default' ? `/${dashboard}` : ''
+            }`,
+          );
+        });
       }),
     );
   } catch (error) {

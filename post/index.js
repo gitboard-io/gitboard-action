@@ -14520,28 +14520,25 @@ function run() {
                 .getInput('key')
                 .split(',')
                 .map((x) => x.trim());
+            const dashboardInput = core.getInput('dashboard');
+            const dashboards = dashboardInput
+                ? core
+                    .getInput('dashboard')
+                    .split(',')
+                    .map((x) => x.trim())
+                : ['default'];
             const status = core.getInput('status');
             console.log(`GitHub context: ${JSON.stringify(github.context)}`);
             yield Promise.all(usernames.map((username, index) => __awaiter(this, void 0, void 0, function* () {
-                const key = keys[index];
-                const gitboardApiSdk = new gitboard_api_1.GitboardApiSdk(authenticatedAxios(`https://api.gitboard.io`, key));
-                yield gitboardApiSdk.upsertJob({ username }, {
-                    username,
-                    repository: github.context.payload.repository.full_name,
-                    workflow: github.context.workflow,
-                    job: github.context.job,
-                    runNumber: String(github.context.runNumber),
-                    runId: String(github.context.runId),
-                    message: github.context.payload['head_commit'].message,
-                    status: status,
-                    access: github.context.payload.repository.private
-                        ? 'private'
-                        : 'public',
-                    updated: new Date().toISOString(),
-                    url: github.context.payload.repository.html_url,
-                });
-                console.log(`GitHub context: ${JSON.stringify(github.context)}`);
-                console.log(`View GitBoard.io dashboard: https://gitboard.io/${username}/dashboard`);
+                dashboards.map((dashboard) => __awaiter(this, void 0, void 0, function* () {
+                    const key = keys[index];
+                    const gitboardApiSdk = new gitboard_api_1.GitboardApiSdk(authenticatedAxios(`https://api.gitboard.io`, key));
+                    yield gitboardApiSdk.upsertJob({ username }, Object.assign(Object.assign({ username, repository: github.context.payload.repository.full_name, workflow: github.context.workflow }, (dashboard !== 'default' ? { dashboard } : {})), { job: github.context.job, runNumber: String(github.context.runNumber), runId: String(github.context.runId), message: github.context.payload['head_commit'].message, status: status, access: github.context.payload.repository.private
+                            ? 'private'
+                            : 'public', updated: new Date().toISOString(), url: github.context.payload.repository.html_url }));
+                    console.log(`GitHub context: ${JSON.stringify(github.context)}`);
+                    console.log(`View GitBoard.io dashboard: https://gitboard.io/${username}/dashboard${dashboard !== 'default' ? `/${dashboard}` : ''}`);
+                }));
             })));
         }
         catch (error) {
@@ -14784,6 +14781,42 @@ class GitboardApiSdk {
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
+    async createDashboard(params, body, headers = {}) {
+        const resource = '/user/{username}/dashboard';
+        const path = `/user/${params.username}/dashboard`;
+        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), params, {}, {}, headers);
+        if (result.statusCode === 200) {
+            return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
+        }
+        else if (result.statusCode === 404) {
+            return { statusCode: 404, headers: result.headers, result: JSON.parse(result.body) };
+        }
+        throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
+    }
+    async updateDashboard(params, body, headers = {}) {
+        const resource = '/user/{username}/dashboard/{id}';
+        const path = `/user/${params.username}/dashboard/${params.id}`;
+        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), params, {}, {}, headers);
+        if (result.statusCode === 200) {
+            return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
+        }
+        else if (result.statusCode === 404) {
+            return { statusCode: 404, headers: result.headers, result: JSON.parse(result.body) };
+        }
+        throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
+    }
+    async deleteDashboard(params, headers = {}) {
+        const resource = '/user/{username}/dashboard/{id}';
+        const path = `/user/${params.username}/dashboard/${params.id}`;
+        const result = await this.caller.call('DELETE', resource, path, undefined, params, {}, {}, headers);
+        if (result.statusCode === 200) {
+            return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
+        }
+        else if (result.statusCode === 404) {
+            return { statusCode: 404, headers: result.headers, result: JSON.parse(result.body) };
+        }
+        throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
+    }
     async updateSubscription(params, body, headers = {}) {
         const resource = '/user/{username}/subscription';
         const path = `/user/${params.username}/subscription`;
@@ -14829,10 +14862,10 @@ class GitboardApiSdk {
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
-    async getJobs(params, headers = {}) {
+    async getJobs(params, queryParameters, multiQueryParameters, headers = {}) {
         const resource = '/job/{username}';
         const path = `/job/${params.username}`;
-        const result = await this.caller.call('GET', resource, path, undefined, params, {}, {}, headers);
+        const result = await this.caller.call('GET', resource, path, undefined, params, queryParameters, multiQueryParameters, headers);
         if (result.statusCode === 200) {
             return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
         }
