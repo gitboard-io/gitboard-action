@@ -5,11 +5,14 @@ branding:
   color: green
 inputs:
   username:
-    description: 'GitBoard.io account username. Multiple account usernames can be supplied. Separate account usernames with a comma. Align corresponding account usernames and account keys.'
+    description: 'GitBoard.io username, dictates which GitBoard.io account will reflect the job status. A users GitBoard.io username can be found at https://gitboard.io/profile. Multiple account usernames can be supplied. Separate account usernames with a comma. Align corresponding account usernames and account keys.'
     required: true
   key:
-    description: 'GitBoard.io account key, Multiple account keys can be supplied. Separate account keys with a comma. Align corresponding account usernames and account keys.'
+    description: 'GitBoard.io users api key, authenticates the request to the GitBoard.io api. This should be kept secret, we recommend storing this in a GitHub secret. A users GitBoard.io api key can be found at https://gitboard.io/profile. Multiple account keys can be supplied. Separate account keys with a comma. Align corresponding account usernames and account keys.'
     required: true
+  dashboard:
+      description: 'GitBoard.io dashboard reference, dictates which GitBoard.io dashboard will reflect the job status. Defaults to a users default dashboard. A users GitBoard.io dashboard references can be found at https://gitboard.io/settings. Multiple dashboard references can be supplied. Separate dashboard references with a comma'
+      required: true
   status:
     description: 'job status'
     default: ${{ job.status }}
