@@ -20,7 +20,10 @@ async function run() {
           .split(',')
           .map((x) => x.trim())
       : ['default'];
-    console.log(`GitHub context: ${JSON.stringify(github.context)}`);
+    console.log(
+      `GitHub context: ${JSON.stringify(github.context)}`,
+      dashboards,
+    );
     await Promise.all(
       usernames.map(async (username, index) => {
         dashboards.map(async (dashboard) => {

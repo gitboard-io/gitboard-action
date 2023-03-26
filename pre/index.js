@@ -14527,7 +14527,7 @@ function run() {
                     .split(',')
                     .map((x) => x.trim())
                 : ['default'];
-            console.log(`GitHub context: ${JSON.stringify(github.context)}`);
+            console.log(`GitHub context: ${JSON.stringify(github.context)}`, dashboards);
             yield Promise.all(usernames.map((username, index) => __awaiter(this, void 0, void 0, function* () {
                 dashboards.map((dashboard) => __awaiter(this, void 0, void 0, function* () {
                     const key = keys[index];
