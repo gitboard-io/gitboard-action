@@ -14541,7 +14541,8 @@ function run() {
             })));
         }
         catch (error) {
-            core.setFailed(error.message);
+            console.log('Issue reporting build status to GitBoard.io');
+            console.debug('GitBoard.io error message:', error);
         }
     });
 }
