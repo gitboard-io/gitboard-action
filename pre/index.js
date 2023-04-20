@@ -14520,24 +14520,40 @@ function run() {
                 .getInput('key')
                 .split(',')
                 .map((x) => x.trim());
-            const dashboardInput = core.getInput('dashboard');
-            const dashboards = dashboardInput
-                ? core
-                    .getInput('dashboard')
-                    .split(',')
-                    .map((x) => x.trim())
-                : ['default'];
-            console.log(`GitHub context: ${JSON.stringify(github.context)}`, dashboards);
             yield Promise.all(usernames.map((username, index) => __awaiter(this, void 0, void 0, function* () {
-                dashboards.map((dashboard) => __awaiter(this, void 0, void 0, function* () {
-                    const key = keys[index];
-                    const gitboardApiSdk = new gitboard_api_1.GitboardApiSdk(authenticatedAxios(`https://api.gitboard.io`, key));
-                    yield gitboardApiSdk.upsertJob({ username }, Object.assign(Object.assign({ username, repository: github.context.payload.repository.full_name, workflow: github.context.workflow }, (dashboard !== 'default' ? { dashboard } : {})), { job: github.context.job, runNumber: String(github.context.runNumber), runId: String(github.context.runId), message: github.context.payload['head_commit'].message, status: 'pending', access: github.context.payload.repository.private
-                            ? 'private'
-                            : 'public', updated: new Date().toISOString(), url: github.context.payload.repository.html_url }));
-                    console.log(`GitHub context: ${JSON.stringify(github.context)}`);
-                    console.log(`View GitBoard.io dashboard: https://gitboard.io/${username}/dashboard${dashboard !== 'default' ? `/${dashboard}` : ''}`);
-                }));
+                const key = keys[index];
+                const gitboardApiSdk = new gitboard_api_1.GitboardApiSdk(authenticatedAxios(`https://api.gitboard.io`, key));
+                const response = yield gitboardApiSdk.upsertJob({ username }, {
+                    username,
+                    repository: github.context.payload.repository.full_name,
+                    workflow: github.context.workflow,
+                    job: github.context.job,
+                    runNumber: String(github.context.runNumber),
+                    runId: String(github.context.runId),
+                    message: github.context.payload['head_commit'].message,
+                    status: 'pending',
+                    access: github.context.payload.repository.private
+                        ? 'private'
+                        : 'public',
+                    updated: new Date().toISOString(),
+                    url: github.context.payload.repository.html_url,
+                });
+                switch (response.statusCode) {
+                    case 200: {
+                        console.log(`View GitBoard.io dashboard: https://gitboard.io/${username}/dashboard`);
+                        break;
+                    }
+                    case 401: {
+                        const { message } = response.result;
+                        console.log(message);
+                        break;
+                    }
+                    case 403: {
+                        const { message } = response.result;
+                        console.log(message);
+                        break;
+                    }
+                }
             })));
         }
         catch (error) {
@@ -14859,6 +14875,12 @@ class GitboardApiSdk {
         const result = await this.caller.call('POST', resource, path, JSON.stringify(body), params, {}, {}, headers);
         if (result.statusCode === 200) {
             return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
+        }
+        else if (result.statusCode === 401) {
+            return { statusCode: 401, headers: result.headers, result: JSON.parse(result.body) };
+        }
+        else if (result.statusCode === 403) {
+            return { statusCode: 403, headers: result.headers, result: JSON.parse(result.body) };
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }

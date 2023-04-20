@@ -14,11 +14,6 @@ Simply [login to GitBoard.io](https://gitboard.io/login) using your github accou
 
 **Required** -  GitBoard.io users api key, authenticates the request to the GitBoard.io api. This should be kept secret, we recommend storing this in a GitHub secret. A users GitBoard.io api key can be found at https://gitboard.io/profile. Multiple account keys can be supplied. Separate account keys with a comma. Align corresponding account usernames and account keys.
 
-### `dashboard`
-
-**Optional** -  GitBoard.io dashboard reference, dictates which GitBoard.io dashboard will reflect the job status. Defaults to a users default dashboard. A users GitBoard.io dashboard references can be found at https://gitboard.io/settings. Multiple dashboard references can be supplied. Separate dashboard references with a comma.
-
-
 ## Example usage
 
 Update any GitHub Action job to include the following step, replacing the values with those provided on your [GitBoard.io profile](https://gitboard.io/profile):
@@ -37,15 +32,6 @@ uses: gitboard-io/gitboard-action@main
 with:
   username: # <replace-with-first-gitboard.io-username>, <replace-with-second-gitboard.io-username>
   key: # <replace-with-first-gitboard.io-api-key>, <replace-with-second-gitboard.io-api-key>
-```
-
-### Dashboard
-```yaml
-uses: gitboard-io/gitboard-action@main
-with:
-  username: # <replace-with-gitboard.io-username>
-  key: # <replace-with-gitboard.io-api-key>
-  dashboard: # <replace-with-gitboard.io-dashboard-reference>
 ```
 
 At GitBoard.io we store our inputs as Organisation Actions secrets to enable easy addition and updating of this step across our organisations repositories. 
