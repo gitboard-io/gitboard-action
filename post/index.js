@@ -14566,7 +14566,7 @@ function run() {
 function authenticatedAxios(url, key) {
     return {
         call: (method, resource, path, body, pathParameters, queryParameters, multiQueryParameters, headers, config) => __awaiter(this, void 0, void 0, function* () {
-            const result = yield (0, axios_1.default)(url + path, Object.assign({ method: method, data: body, params: Object.assign(Object.assign({}, queryParameters), multiQueryParameters), headers: Object.assign(Object.assign({}, headers), { 'X-Api-Key': `${key}` }), transformResponse: [] }, config));
+            const result = yield (0, axios_1.default)(url + path, Object.assign({ validateStatus: false, method: method, data: body, params: Object.assign(Object.assign({}, queryParameters), multiQueryParameters), headers: Object.assign(Object.assign({}, headers), { 'X-Api-Key': `${key}` }), transformResponse: [] }, config));
             return {
                 statusCode: result.status,
                 body: result.data,

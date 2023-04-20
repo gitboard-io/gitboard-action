@@ -78,6 +78,7 @@ function authenticatedAxios(url: string, key: string): Caller {
       config: any,
     ) => {
       const result = await axios(url + path, {
+        validateStatus: false,
         method: method as any,
         data: body,
         params: { ...queryParameters, ...multiQueryParameters },
