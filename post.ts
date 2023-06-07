@@ -2,6 +2,7 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import { Caller, GitboardApiSdk } from '@codeaim/gitboard-api';
 import axios from 'axios';
+import { Context } from "@actions/github/lib/context";
 
 async function run() {
   try {
@@ -20,8 +21,6 @@ async function run() {
         const gitboardApiSdk = new GitboardApiSdk(
           authenticatedAxios(`https://api.gitboard.io`, key),
         );
-        console.log(github)
-        console.log(github.context)
         const response = await gitboardApiSdk.upsertJob(
           { username },
           {
@@ -31,7 +30,7 @@ async function run() {
             job: github.context.job,
             runNumber: String(github.context.runNumber),
             runId: String(github.context.runId),
-            message: github.context.payload['head_commit'].message,
+            message: resolveMessage(github.context),
             status: status,
             access: github.context.payload.repository.private
               ? 'private'
@@ -98,6 +97,12 @@ function authenticatedAxios(url: string, key: string): Caller {
       };
     },
   };
+}
+function resolveMessage(context: Context): string {
+  const message =  context.eventName === "pull_request"
+    ? context.payload['pull_request']?.title
+    : context.payload['head_commit']?.message
+  return message ?? 'unknown'
 }
 
 run();

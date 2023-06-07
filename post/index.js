@@ -14524,8 +14524,6 @@ function run() {
             yield Promise.all(usernames.map((username, index) => __awaiter(this, void 0, void 0, function* () {
                 const key = keys[index];
                 const gitboardApiSdk = new gitboard_api_1.GitboardApiSdk(authenticatedAxios(`https://api.gitboard.io`, key));
-                console.log(github);
-                console.log(github.context);
                 const response = yield gitboardApiSdk.upsertJob({ username }, {
                     username,
                     repository: github.context.payload.repository.full_name,
@@ -14533,7 +14531,7 @@ function run() {
                     job: github.context.job,
                     runNumber: String(github.context.runNumber),
                     runId: String(github.context.runId),
-                    message: github.context.payload['head_commit'].message,
+                    message: resolveMessage(github.context),
                     status: status,
                     access: github.context.payload.repository.private
                         ? 'private'
@@ -14576,6 +14574,13 @@ function authenticatedAxios(url, key) {
             };
         }),
     };
+}
+function resolveMessage(context) {
+    var _a, _b;
+    const message = context.eventName === "pull_request"
+        ? (_a = context.payload['pull_request']) === null || _a === void 0 ? void 0 : _a.title
+        : (_b = context.payload['head_commit']) === null || _b === void 0 ? void 0 : _b.message;
+    return message !== null && message !== void 0 ? message : 'unknown';
 }
 run();
 
