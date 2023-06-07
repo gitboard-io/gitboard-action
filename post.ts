@@ -20,6 +20,8 @@ async function run() {
         const gitboardApiSdk = new GitboardApiSdk(
           authenticatedAxios(`https://api.gitboard.io`, key),
         );
+        console.log(github)
+        console.log(github.context)
         const response = await gitboardApiSdk.upsertJob(
           { username },
           {

@@ -14524,6 +14524,8 @@ function run() {
             yield Promise.all(usernames.map((username, index) => __awaiter(this, void 0, void 0, function* () {
                 const key = keys[index];
                 const gitboardApiSdk = new gitboard_api_1.GitboardApiSdk(authenticatedAxios(`https://api.gitboard.io`, key));
+                console.log(github);
+                console.log(github.context);
                 const response = yield gitboardApiSdk.upsertJob({ username }, {
                     username,
                     repository: github.context.payload.repository.full_name,
