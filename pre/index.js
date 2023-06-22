@@ -14512,10 +14512,12 @@ const axios_1 = __importDefault(__nccwpck_require__(6545));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            console.debug('Running pre gitboard-action with context', github.context);
             const usernames = core
                 .getInput('username')
                 .split(',')
                 .map((x) => x.trim());
+            console.debug('Pre gitboard-action input usernames', usernames);
             const keys = core
                 .getInput('key')
                 .split(',')
@@ -14523,7 +14525,7 @@ function run() {
             yield Promise.all(usernames.map((username, index) => __awaiter(this, void 0, void 0, function* () {
                 const key = keys[index];
                 const gitboardApiSdk = new gitboard_api_1.GitboardApiSdk(authenticatedAxios(`https://api.gitboard.io`, key));
-                const response = yield gitboardApiSdk.upsertJob({ username }, {
+                const upsertJobBody = {
                     username,
                     repository: github.context.payload.repository.full_name,
                     workflow: github.context.workflow,
@@ -14537,7 +14539,10 @@ function run() {
                         : 'public',
                     updated: new Date().toISOString(),
                     url: github.context.payload.repository.html_url,
-                });
+                };
+                console.debug('Pre gitboard-action upsert job body', username, upsertJobBody);
+                const response = yield gitboardApiSdk.upsertJob({ username }, upsertJobBody);
+                console.debug('Pre gitboard-action upsert job response status code', response.statusCode);
                 switch (response.statusCode) {
                     case 200: {
                         console.log(`View GitBoard.io dashboard: https://gitboard.io/${username}/dashboard`);
@@ -14564,7 +14569,7 @@ function run() {
 }
 function resolveMessage(context) {
     var _a, _b;
-    const message = context.eventName === "pull_request"
+    const message = context.eventName === 'pull_request'
         ? (_a = context.payload['pull_request']) === null || _a === void 0 ? void 0 : _a.title
         : (_b = context.payload['head_commit']) === null || _b === void 0 ? void 0 : _b.message;
     return message !== null && message !== void 0 ? message : 'unknown';
