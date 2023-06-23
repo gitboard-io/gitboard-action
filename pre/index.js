@@ -14512,12 +14512,12 @@ const axios_1 = __importDefault(__nccwpck_require__(6545));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            console.debug('Running pre gitboard-action with context', github.context);
+            core.debug(`Running pre gitboard-action with context: ${JSON.stringify(github.context)}`);
             const usernames = core
                 .getInput('username')
                 .split(',')
                 .map((x) => x.trim());
-            console.debug('Pre gitboard-action input usernames', usernames);
+            core.debug(`Pre gitboard-action input usernames: ${JSON.stringify(usernames)}`);
             const keys = core
                 .getInput('key')
                 .split(',')
@@ -14540,9 +14540,9 @@ function run() {
                     updated: new Date().toISOString(),
                     url: github.context.payload.repository.html_url,
                 };
-                console.debug('Pre gitboard-action upsert job body', username, upsertJobBody);
+                core.debug(`Pre gitboard-action upsert job body for ${username}: ${JSON.stringify(upsertJobBody)}`);
                 const response = yield gitboardApiSdk.upsertJob({ username }, upsertJobBody);
-                console.debug('Pre gitboard-action upsert job response status code', response.statusCode);
+                core.debug(`Pre gitboard-action upsert job response status code: ${response.statusCode}`);
                 switch (response.statusCode) {
                     case 200: {
                         console.log(`View GitBoard.io dashboard: https://gitboard.io/${username}/dashboard`);
@@ -14563,7 +14563,7 @@ function run() {
         }
         catch (error) {
             console.log('Issue reporting build status to GitBoard.io');
-            console.debug('GitBoard.io error message:', error);
+            console.log('GitBoard.io error message:', error);
         }
     });
 }

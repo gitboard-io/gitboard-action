@@ -6,12 +6,18 @@ import { Context } from '@actions/github/lib/context';
 
 async function run() {
   try {
-    console.debug('Running pre gitboard-action with context', github.context);
+    core.debug(
+      `Running pre gitboard-action with context: ${JSON.stringify(
+        github.context,
+      )}`,
+    );
     const usernames = core
       .getInput('username')
       .split(',')
       .map((x) => x.trim());
-    console.debug('Pre gitboard-action input usernames', usernames);
+    core.debug(
+      `Pre gitboard-action input usernames: ${JSON.stringify(usernames)}`,
+    );
     const keys = core
       .getInput('key')
       .split(',')
@@ -37,18 +43,17 @@ async function run() {
           updated: new Date().toISOString(),
           url: github.context.payload.repository.html_url,
         };
-        console.debug(
-          'Pre gitboard-action upsert job body',
-          username,
-          upsertJobBody,
+        core.debug(
+          `Pre gitboard-action upsert job body for ${username}: ${JSON.stringify(
+            upsertJobBody,
+          )}`,
         );
         const response = await gitboardApiSdk.upsertJob(
           { username },
           upsertJobBody,
         );
-        console.debug(
-          'Pre gitboard-action upsert job response status code',
-          response.statusCode,
+        core.debug(
+          `Pre gitboard-action upsert job response status code: ${response.statusCode}`,
         );
         switch (response.statusCode) {
           case 200: {
@@ -72,7 +77,7 @@ async function run() {
     );
   } catch (error) {
     console.log('Issue reporting build status to GitBoard.io');
-    console.debug('GitBoard.io error message:', error);
+    console.log('GitBoard.io error message:', error);
   }
 }
 

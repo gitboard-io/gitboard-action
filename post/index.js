@@ -14512,18 +14512,18 @@ const axios_1 = __importDefault(__nccwpck_require__(6545));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            console.debug('Running post gitboard-action with context', github.context);
+            core.debug(`Running post gitboard-action with context: ${JSON.stringify(github.context)}`);
             const usernames = core
                 .getInput('username')
                 .split(',')
                 .map((x) => x.trim());
-            console.debug('Post gitboard-action input usernames', usernames);
+            core.debug(`Post gitboard-action input usernames: ${JSON.stringify(usernames)}`);
             const keys = core
                 .getInput('key')
                 .split(',')
                 .map((x) => x.trim());
             const status = core.getInput('status');
-            console.debug('Post gitboard-action input status', status);
+            core.debug(`Post gitboard-action input status: ${JSON.stringify(status)}`);
             yield Promise.all(usernames.map((username, index) => __awaiter(this, void 0, void 0, function* () {
                 const key = keys[index];
                 const gitboardApiSdk = new gitboard_api_1.GitboardApiSdk(authenticatedAxios(`https://api.gitboard.io`, key));
@@ -14542,9 +14542,9 @@ function run() {
                     updated: new Date().toISOString(),
                     url: github.context.payload.repository.html_url,
                 };
-                console.debug('Post gitboard-action upsert job body', username, upsertJobBody);
+                core.debug(`Post gitboard-action upsert job body for ${username}: ${JSON.stringify(upsertJobBody)}`);
                 const response = yield gitboardApiSdk.upsertJob({ username }, upsertJobBody);
-                console.debug('Post gitboard-action upsert job response status code', response.statusCode);
+                core.debug(`Post gitboard-action upsert job response status code: ${response.statusCode}`);
                 switch (response.statusCode) {
                     case 200: {
                         console.log(`View GitBoard.io dashboard: https://gitboard.io/${username}/dashboard`);
@@ -14565,7 +14565,7 @@ function run() {
         }
         catch (error) {
             console.log('Issue reporting build status to GitBoard.io');
-            console.debug('GitBoard.io error message:', error.message);
+            console.log(`GitBoard.io error message: ${error.message}`);
         }
     });
 }
