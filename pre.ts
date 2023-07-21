@@ -62,11 +62,7 @@ async function run() {
             );
             break;
           }
-          case 401: {
-            const { message } = response.result as Error;
-            console.log(message);
-            break;
-          }
+          case 401:
           case 403: {
             const { message } = response.result as Error;
             console.log(message);
@@ -104,7 +100,7 @@ function authenticatedAxios(url: string, key: string): Caller {
     ) => {
       const result = await axios(url + path, {
         validateStatus: false,
-        method: method as any,
+        method: method,
         data: body,
         params: { ...queryParameters, ...multiQueryParameters },
         headers: {

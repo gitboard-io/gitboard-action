@@ -14548,11 +14548,7 @@ function run() {
                         console.log(`View GitBoard.io dashboard: https://gitboard.io/${username}/dashboard`);
                         break;
                     }
-                    case 401: {
-                        const { message } = response.result;
-                        console.log(message);
-                        break;
-                    }
+                    case 401:
                     case 403: {
                         const { message } = response.result;
                         console.log(message);
