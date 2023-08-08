@@ -14530,6 +14530,7 @@ function run() {
                 const upsertJobBody = {
                     username,
                     repository: github.context.payload.repository.full_name,
+                    language: github.context.payload.repository.language,
                     workflow: github.context.workflow,
                     job: github.context.job,
                     runNumber: String(github.context.runNumber),

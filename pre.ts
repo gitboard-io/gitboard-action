@@ -28,9 +28,11 @@ async function run() {
         const gitboardApiSdk = new GitboardApiSdk(
           authenticatedAxios(`https://api.gitboard.io`, key),
         );
+        //Context Example: https://gist.github.com/colbyfayock/1710edb9f47ceda0569844f791403e7e
         const upsertJobBody = {
           username,
           repository: github.context.payload.repository.full_name,
+          language: github.context.payload.repository.language,
           workflow: github.context.workflow,
           job: github.context.job,
           runNumber: String(github.context.runNumber),

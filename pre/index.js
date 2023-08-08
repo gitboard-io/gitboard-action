@@ -14525,9 +14525,11 @@ function run() {
             yield Promise.all(usernames.map((username, index) => __awaiter(this, void 0, void 0, function* () {
                 const key = keys[index];
                 const gitboardApiSdk = new gitboard_api_1.GitboardApiSdk(authenticatedAxios(`https://api.gitboard.io`, key));
+                //Context Example: https://gist.github.com/colbyfayock/1710edb9f47ceda0569844f791403e7e
                 const upsertJobBody = {
                     username,
                     repository: github.context.payload.repository.full_name,
+                    language: github.context.payload.repository.language,
                     workflow: github.context.workflow,
                     job: github.context.job,
                     runNumber: String(github.context.runNumber),
