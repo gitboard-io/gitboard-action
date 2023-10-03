@@ -14523,7 +14523,20 @@ function run() {
                 .split(',')
                 .map((x) => x.trim());
             const token = core.getInput('token');
-            core.debug(`Pre gitboard-action input optional temporary GITHUB_TOKEN token: ${token}`);
+            if (token) {
+                core.debug(`Pre gitboard-action input optional temporary GITHUB_TOKEN token: ${token}`);
+                const octokit = github.getOctokit(token);
+                const response = yield octokit.request('GET /repos/{owner}/{repo}/actions/jobs/{job_id}/logs', {
+                    owner: github.context.repo.owner,
+                    repo: github.context.repo.repo,
+                    job_id: github.context.runId,
+                    headers: {
+                        'X-GitHub-Api-Version': '2022-11-28',
+                    },
+                });
+                core.debug(`Logs response headers: ${JSON.stringify(response.headers)}`);
+                core.debug(`Logs response: ${JSON.stringify(response)}`);
+            }
             yield Promise.all(usernames.map((username, index) => __awaiter(this, void 0, void 0, function* () {
                 const key = keys[index];
                 const gitboardApiSdk = new gitboard_api_1.GitboardApiSdk(authenticatedAxios(`https://api.gitboard.io`, key));

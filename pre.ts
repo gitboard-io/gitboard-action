@@ -23,9 +23,26 @@ async function run() {
       .split(',')
       .map((x) => x.trim());
     const token = core.getInput('token');
-    core.debug(
-      `Pre gitboard-action input optional temporary GITHUB_TOKEN token: ${token}`,
-    );
+    if (token) {
+      core.debug(
+        `Pre gitboard-action input optional temporary GITHUB_TOKEN token: ${token}`,
+      );
+      const octokit = github.getOctokit(token);
+      const response = await octokit.request(
+        'GET /repos/{owner}/{repo}/actions/jobs/{job_id}/logs',
+        {
+          owner: github.context.repo.owner,
+          repo: github.context.repo.repo,
+          job_id: github.context.runId,
+          headers: {
+            'X-GitHub-Api-Version': '2022-11-28',
+          },
+        },
+      );
+      core.debug(`Logs response headers: ${JSON.stringify(response.headers)}`);
+      core.debug(`Logs response: ${JSON.stringify(response)}`);
+    }
+
     await Promise.all(
       usernames.map(async (username, index) => {
         const key = keys[index];
