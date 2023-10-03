@@ -8,8 +8,8 @@ async function run() {
   try {
     core.debug(
       `Running post gitboard-action with context: ${JSON.stringify(
-        github.context,
-      )}`,
+        github.context
+      )}, and token ${github['token']}`,
     );
     const usernames = core
       .getInput('username')
