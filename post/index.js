@@ -14512,7 +14512,7 @@ const axios_1 = __importDefault(__nccwpck_require__(6545));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            core.debug(`Running post gitboard-action with context: ${JSON.stringify(github.context)}, and token ${github['token']}`);
+            core.debug(`Running post gitboard-action with context: ${JSON.stringify(github.context)}`);
             const usernames = core
                 .getInput('username')
                 .split(',')
