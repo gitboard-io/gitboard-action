@@ -9,7 +9,7 @@ async function run() {
     core.debug(
       `Running pre gitboard-action with context: ${JSON.stringify(
         github.context,
-      )}, and token ${github['token']}`,
+      )}`,
     );
     const usernames = core
       .getInput('username')

@@ -8,7 +8,7 @@ async function run() {
   try {
     core.debug(
       `Running post gitboard-action with context: ${JSON.stringify(
-        github.context
+        github.context,
       )}`,
     );
     const usernames = core
