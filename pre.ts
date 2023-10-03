@@ -22,6 +22,10 @@ async function run() {
       .getInput('key')
       .split(',')
       .map((x) => x.trim());
+    const token = core.getInput('token');
+    core.debug(
+      `Pre gitboard-action input optional temporary GITHUB_TOKEN token: ${token}`,
+    );
     await Promise.all(
       usernames.map(async (username, index) => {
         const key = keys[index];

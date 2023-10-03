@@ -13,6 +13,8 @@ inputs:
   status:
     description: 'job status'
     default: ${{ job.status }}
+  token:
+    description: 'GitHub automatically creates a unique GITHUB_TOKEN secret to use in your workflow. You can use the GITHUB_TOKEN to authenticate in the workflow job. https://docs.github.com/en/actions/security-guides/automatic-token-authentication'
 runs:
   using: 'node16'
   pre: 'pre/index.js'

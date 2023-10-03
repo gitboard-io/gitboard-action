@@ -14522,6 +14522,8 @@ function run() {
                 .getInput('key')
                 .split(',')
                 .map((x) => x.trim());
+            const token = core.getInput('token');
+            core.debug(`Pre gitboard-action input optional temporary GITHUB_TOKEN token: ${token}`);
             yield Promise.all(usernames.map((username, index) => __awaiter(this, void 0, void 0, function* () {
                 const key = keys[index];
                 const gitboardApiSdk = new gitboard_api_1.GitboardApiSdk(authenticatedAxios(`https://api.gitboard.io`, key));
