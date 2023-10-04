@@ -14547,7 +14547,7 @@ function run() {
                         ? 'completed'
                         : step.status, conclusion: step.name.startsWith('Post Run gitboard-io/gitboard-action')
                         ? 'success'
-                        : step.status })));
+                        : step.conclusion })));
                 logUrl = logsResponse.url;
                 core.debug(`Pre gitboard-action job steps: ${JSON.stringify(steps)}`);
                 core.debug(`Pre gitboard-action job log url: ${logUrl}`);
