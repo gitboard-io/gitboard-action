@@ -14524,27 +14524,23 @@ function run() {
                 .map((x) => x.trim());
             const token = core.getInput('token');
             if (token) {
-                core.debug(`Pre gitboard-action input optional temporary GITHUB_TOKEN token: ${token}`);
+                const runRequest = {
+                    owner: github.context.repo.owner,
+                    repo: github.context.repo.repo,
+                    run_id: github.context.runId,
+                    headers: {
+                        'X-GitHub-Api-Version': '2022-11-28'
+                    }
+                };
                 const octokit = github.getOctokit(token);
-                const runResponse = yield octokit.request('GET /repos/{owner}/{repo}/actions/runs/{run_id}', {
-                    owner: github.context.repo.owner,
-                    repo: github.context.repo.repo,
-                    run_id: github.context.runId,
-                    headers: {
-                        'X-GitHub-Api-Version': '2022-11-28'
-                    }
-                });
-                const response = yield octokit.request('GET /repos/{owner}/{repo}/actions/runs/{run_id}/attempts/{attempt_number}/logs', {
-                    owner: github.context.repo.owner,
-                    repo: github.context.repo.repo,
-                    run_id: github.context.runId,
-                    attempt_number: runResponse.data.run_attempt,
-                    headers: {
-                        'X-GitHub-Api-Version': '2022-11-28'
-                    }
-                });
-                core.debug(`Logs response headers: ${JSON.stringify(response.headers)}`);
-                core.debug(`Logs response: ${JSON.stringify(response)}`);
+                const runResponse = yield octokit.request('GET /repos/{owner}/{repo}/actions/runs/{run_id}', runRequest);
+                const attemptRequest = Object.assign(Object.assign({}, runRequest), { attempt_number: runResponse.data.run_attempt });
+                const jobsResponse = yield octokit.request('GET /repos/{owner}/{repo}/actions/runs/{run_id}/attempts/{attempt_number}/jobs', attemptRequest);
+                const logsResponse = yield octokit.request('GET /repos/{owner}/{repo}/actions/runs/{run_id}/attempts/{attempt_number}/logs', attemptRequest);
+                core.debug(`Logs response headers: ${JSON.stringify(jobsResponse.headers)}`);
+                core.debug(`Logs response: ${JSON.stringify(jobsResponse)}`);
+                core.debug(`Logs response headers: ${JSON.stringify(logsResponse.headers)}`);
+                core.debug(`Logs response: ${JSON.stringify(logsResponse)}`);
             }
             yield Promise.all(usernames.map((username, index) => __awaiter(this, void 0, void 0, function* () {
                 const key = keys[index];
