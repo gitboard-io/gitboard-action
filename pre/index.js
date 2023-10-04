@@ -14522,6 +14522,8 @@ function run() {
                 .getInput('key')
                 .split(',')
                 .map((x) => x.trim());
+            let steps = undefined;
+            let logUrl = undefined;
             const token = core.getInput('token');
             if (token) {
                 const runRequest = {
@@ -14529,18 +14531,18 @@ function run() {
                     repo: github.context.repo.repo,
                     run_id: github.context.runId,
                     headers: {
-                        'X-GitHub-Api-Version': '2022-11-28'
-                    }
+                        'X-GitHub-Api-Version': '2022-11-28',
+                    },
                 };
                 const octokit = github.getOctokit(token);
                 const runResponse = yield octokit.request('GET /repos/{owner}/{repo}/actions/runs/{run_id}', runRequest);
                 const attemptRequest = Object.assign(Object.assign({}, runRequest), { attempt_number: runResponse.data.run_attempt });
                 const jobsResponse = yield octokit.request('GET /repos/{owner}/{repo}/actions/runs/{run_id}/attempts/{attempt_number}/jobs', attemptRequest);
                 const logsResponse = yield octokit.request('GET /repos/{owner}/{repo}/actions/runs/{run_id}/attempts/{attempt_number}/logs', attemptRequest);
-                core.debug(`Logs response headers: ${JSON.stringify(jobsResponse.headers)}`);
-                core.debug(`Logs response: ${JSON.stringify(jobsResponse)}`);
-                core.debug(`Logs response headers: ${JSON.stringify(logsResponse.headers)}`);
-                core.debug(`Logs response: ${JSON.stringify(logsResponse)}`);
+                steps = jobsResponse.data.jobs[0].steps.map((step) => (Object.assign(Object.assign({}, step), { started: step['started_at'], completed: step['completed_at'] })));
+                logUrl = logsResponse.url;
+                core.debug(`Pre gitboard-action job steps: ${JSON.stringify(steps)}`);
+                core.debug(`Pre gitboard-action job log url: ${logUrl}`);
             }
             yield Promise.all(usernames.map((username, index) => __awaiter(this, void 0, void 0, function* () {
                 const key = keys[index];
@@ -14561,6 +14563,8 @@ function run() {
                         : 'public',
                     updated: new Date().toISOString(),
                     url: github.context.payload.repository.html_url,
+                    steps: steps,
+                    logUrl: logUrl,
                 };
                 core.debug(`Pre gitboard-action upsert job body for ${username}: ${JSON.stringify(upsertJobBody)}`);
                 const response = yield gitboardApiSdk.upsertJob({ username }, upsertJobBody);

@@ -22,6 +22,9 @@ async function run() {
       .getInput('key')
       .split(',')
       .map((x) => x.trim());
+
+    let steps = undefined;
+    let logUrl = undefined;
     const token = core.getInput('token');
     if (token) {
       const runRequest = {
@@ -49,16 +52,15 @@ async function run() {
         'GET /repos/{owner}/{repo}/actions/runs/{run_id}/attempts/{attempt_number}/logs',
         attemptRequest,
       );
-      core.debug(
-        `Logs response headers: ${JSON.stringify(jobsResponse.headers)}`,
-      );
-      core.debug(`Logs response: ${JSON.stringify(jobsResponse)}`);
-      core.debug(
-        `Logs response headers: ${JSON.stringify(logsResponse.headers)}`,
-      );
-      core.debug(`Logs response: ${JSON.stringify(logsResponse)}`);
+      steps = jobsResponse.data.jobs[0].steps.map((step) => ({
+        ...step,
+        started: step['started_at'],
+        completed: step['completed_at'],
+      }));
+      logUrl = logsResponse.url;
+      core.debug(`Pre gitboard-action job steps: ${JSON.stringify(steps)}`);
+      core.debug(`Pre gitboard-action job log url: ${logUrl}`);
     }
-
     await Promise.all(
       usernames.map(async (username, index) => {
         const key = keys[index];
@@ -81,6 +83,8 @@ async function run() {
             : 'public',
           updated: new Date().toISOString(),
           url: github.context.payload.repository.html_url,
+          steps: steps,
+          logUrl: logUrl,
         };
         core.debug(
           `Pre gitboard-action upsert job body for ${username}: ${JSON.stringify(
