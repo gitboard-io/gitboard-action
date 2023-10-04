@@ -14539,7 +14539,13 @@ function run() {
                 const attemptRequest = Object.assign(Object.assign({}, runRequest), { attempt_number: runResponse.data.run_attempt });
                 const jobsResponse = yield octokit.request('GET /repos/{owner}/{repo}/actions/runs/{run_id}/attempts/{attempt_number}/jobs', attemptRequest);
                 const logsResponse = yield octokit.request('GET /repos/{owner}/{repo}/actions/runs/{run_id}/attempts/{attempt_number}/logs', attemptRequest);
-                steps = jobsResponse.data.jobs[0].steps.map((step) => (Object.assign(Object.assign({}, step), { started: step['started_at'], completed: step['completed_at'] })));
+                steps = jobsResponse.data.jobs[0].steps.map((step) => (Object.assign(Object.assign({}, step), { started: step['started_at'], completed: step.name.startsWith('Pre Run gitboard-io/gitboard-action')
+                        ? new Date().toISOString()
+                        : step['completed_at'], status: step.name.startsWith('Pre Run gitboard-io/gitboard-action')
+                        ? 'completed'
+                        : step.status, conclusion: step.name.startsWith('Pre Run gitboard-io/gitboard-action')
+                        ? 'success'
+                        : step.conclusion })));
                 logUrl = logsResponse.url;
                 core.debug(`Pre gitboard-action job steps: ${JSON.stringify(steps)}`);
                 core.debug(`Pre gitboard-action job log url: ${logUrl}`);

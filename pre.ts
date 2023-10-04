@@ -55,7 +55,15 @@ async function run() {
       steps = jobsResponse.data.jobs[0].steps.map((step) => ({
         ...step,
         started: step['started_at'],
-        completed: step['completed_at'],
+        completed: step.name.startsWith('Pre Run gitboard-io/gitboard-action')
+          ? new Date().toISOString()
+          : step['completed_at'],
+        status: step.name.startsWith('Pre Run gitboard-io/gitboard-action')
+          ? 'completed'
+          : step.status,
+        conclusion: step.name.startsWith('Pre Run gitboard-io/gitboard-action')
+          ? 'success'
+          : step.conclusion,
       }));
       logUrl = logsResponse.url;
       core.debug(`Pre gitboard-action job steps: ${JSON.stringify(steps)}`);
