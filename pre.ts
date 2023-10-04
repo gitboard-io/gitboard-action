@@ -28,26 +28,23 @@ async function run() {
         `Pre gitboard-action input optional temporary GITHUB_TOKEN token: ${token}`,
       );
       const octokit = github.getOctokit(token);
-      const jobsResponse = await octokit.request('GET /repos/{owner}/{repo}/actions/runs/{run_id}/attempts/{attempt_number}/jobs', {
+      const runResponse = await octokit.request('GET /repos/{owner}/{repo}/actions/runs/{run_id}', {
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
         run_id: github.context.runId,
-        attempt_number: github.context.runNumber,
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28'
+        }
+      })
+      const response = await octokit.request('GET /repos/{owner}/{repo}/actions/runs/{run_id}/attempts/{attempt_number}/logs', {
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+        run_id: github.context.runId,
+        attempt_number: runResponse.data.run_attempt,
         headers: {
           'X-GitHub-Api-Version': '2022-11-28'
         }
       });
-      const response = await octokit.request(
-        'GET /repos/{owner}/{repo}/actions/jobs/{job_id}/logs',
-        {
-          owner: github.context.repo.owner,
-          repo: github.context.repo.repo,
-          job_id: jobsResponse.data.jobs[0].id,
-          headers: {
-            'X-GitHub-Api-Version': '2022-11-28',
-          },
-        },
-      );
       core.debug(`Logs response headers: ${JSON.stringify(response.headers)}`);
       core.debug(`Logs response: ${JSON.stringify(response)}`);
     }
