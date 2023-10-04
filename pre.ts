@@ -61,6 +61,7 @@ async function run() {
       core.debug(`Pre gitboard-action job steps: ${JSON.stringify(steps)}`);
       core.debug(`Pre gitboard-action job log url: ${logUrl}`);
     }
+
     await Promise.all(
       usernames.map(async (username, index) => {
         const key = keys[index];

@@ -24,6 +24,46 @@ async function run() {
       .map((x) => x.trim());
     const status = core.getInput('status');
     core.debug(`Post gitboard-action input status: ${JSON.stringify(status)}`);
+
+    let steps = undefined;
+    let logUrl = undefined;
+    const token = core.getInput('token');
+    if (token) {
+      const runRequest = {
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+        run_id: github.context.runId,
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      };
+      const octokit = github.getOctokit(token);
+      const runResponse = await octokit.request(
+        'GET /repos/{owner}/{repo}/actions/runs/{run_id}',
+        runRequest,
+      );
+      const attemptRequest = {
+        ...runRequest,
+        attempt_number: runResponse.data.run_attempt,
+      };
+      const jobsResponse = await octokit.request(
+        'GET /repos/{owner}/{repo}/actions/runs/{run_id}/attempts/{attempt_number}/jobs',
+        attemptRequest,
+      );
+      const logsResponse = await octokit.request(
+        'GET /repos/{owner}/{repo}/actions/runs/{run_id}/attempts/{attempt_number}/logs',
+        attemptRequest,
+      );
+      steps = jobsResponse.data.jobs[0].steps.map((step) => ({
+        ...step,
+        started: step['started_at'],
+        completed: step['completed_at'],
+      }));
+      logUrl = logsResponse.url;
+      core.debug(`Pre gitboard-action job steps: ${JSON.stringify(steps)}`);
+      core.debug(`Pre gitboard-action job log url: ${logUrl}`);
+    }
+
     await Promise.all(
       usernames.map(async (username, index) => {
         const key = keys[index];
@@ -45,6 +85,8 @@ async function run() {
             : 'public',
           updated: new Date().toISOString(),
           url: github.context.payload.repository.html_url,
+          steps: steps,
+          logUrl: logUrl,
         };
         core.debug(
           `Post gitboard-action upsert job body for ${username}: ${JSON.stringify(
