@@ -28,12 +28,21 @@ async function run() {
         `Pre gitboard-action input optional temporary GITHUB_TOKEN token: ${token}`,
       );
       const octokit = github.getOctokit(token);
+      const jobsResponse = await octokit.request('GET /repos/{owner}/{repo}/actions/runs/{run_id}/attempts/{attempt_number}/jobs', {
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+        run_id: github.context.runId,
+        attempt_number: github.context.runNumber,
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28'
+        }
+      });
       const response = await octokit.request(
         'GET /repos/{owner}/{repo}/actions/jobs/{job_id}/logs',
         {
           owner: github.context.repo.owner,
           repo: github.context.repo.repo,
-          job_id: github.context.runId,
+          job_id: jobsResponse.data.jobs[0].id,
           headers: {
             'X-GitHub-Api-Version': '2022-11-28',
           },
