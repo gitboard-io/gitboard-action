@@ -26,27 +26,12 @@ async function run() {
     let steps = undefined;
     const token = core.getInput('token');
     if (token) {
-      const runRequest = {
+      const octokit = github.getOctokit(token);
+      const jobsResponse = await octokit.rest.actions.listJobsForWorkflowRun({
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
-        run_id: github.context.runId,
-        headers: {
-          'X-GitHub-Api-Version': '2022-11-28',
-        },
-      };
-      const octokit = github.getOctokit(token);
-      const runResponse = await octokit.request(
-        'GET /repos/{owner}/{repo}/actions/runs/{run_id}',
-        runRequest,
-      );
-      const attemptRequest = {
-        ...runRequest,
-        attempt_number: runResponse.data.run_attempt,
-      };
-      const jobsResponse = await octokit.request(
-        'GET /repos/{owner}/{repo}/actions/runs/{run_id}/attempts/{attempt_number}/jobs',
-        attemptRequest,
-      );
+        run_id: github.context.runId
+      });
       steps = jobsResponse.data.jobs[0].steps.map((step) => ({
         ...step,
         started: step['started_at'],

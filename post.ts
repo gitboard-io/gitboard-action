@@ -29,33 +29,14 @@ async function run() {
     let logUrl = undefined;
     const token = core.getInput('token');
     if (token) {
+      const octokit = github.getOctokit(token);
       const runRequest = {
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
-        run_id: github.context.runId,
-        headers: {
-          'X-GitHub-Api-Version': '2022-11-28',
-        },
+        run_id: github.context.runId
       };
-      const octokit = github.getOctokit(token);
-      const runResponse = await octokit.request(
-        'GET /repos/{owner}/{repo}/actions/runs/{run_id}',
-        runRequest,
-      );
-      const attemptRequest = {
-        ...runRequest,
-        attempt_number: runResponse.data.run_attempt,
-      };
-      const jobsResponse = await octokit.request(
-        'GET /repos/{owner}/{repo}/actions/runs/{run_id}/attempts/{attempt_number}/jobs',
-        attemptRequest,
-      );
-      const logsResponse = await octokit.request(
-        runResponse.data.run_attempt === 1
-          ? 'GET /repos/{owner}/{repo}/actions/runs/{run_id}/logs'
-          : 'GET /repos/{owner}/{repo}/actions/runs/{run_id}/attempts/{attempt_number}/logs',
-        runResponse.data.run_attempt === 1 ? runRequest : attemptRequest,
-      );
+      const jobsResponse = await octokit.rest.actions.listJobsForWorkflowRun(runRequest);
+      const logsResponse = await octokit.rest.actions.downloadWorkflowRunLogs(runRequest);
       steps = jobsResponse.data.jobs[0].steps.map((step) => ({
         ...step,
         started: step['started_at'],
