@@ -14540,7 +14540,9 @@ function run() {
                 const runResponse = yield octokit.request('GET /repos/{owner}/{repo}/actions/runs/{run_id}', runRequest);
                 const attemptRequest = Object.assign(Object.assign({}, runRequest), { attempt_number: runResponse.data.run_attempt });
                 const jobsResponse = yield octokit.request('GET /repos/{owner}/{repo}/actions/runs/{run_id}/attempts/{attempt_number}/jobs', attemptRequest);
-                const logsResponse = yield octokit.request('GET /repos/{owner}/{repo}/actions/runs/{run_id}/attempts/{attempt_number}/logs', attemptRequest);
+                const logsResponse = yield octokit.request(runResponse.data.run_attempt === 1
+                    ? 'GET /repos/{owner}/{repo}/actions/runs/{run_id}/logs'
+                    : 'GET /repos/{owner}/{repo}/actions/runs/{run_id}/attempts/{attempt_number}/logs', attemptRequest);
                 steps = jobsResponse.data.jobs[0].steps.map((step) => (Object.assign(Object.assign({}, step), { started: step['started_at'], completed: step.name.startsWith('Post Run gitboard-io/gitboard-action')
                         ? new Date().toISOString()
                         : step['completed_at'], status: step.name.startsWith('Post Run gitboard-io/gitboard-action')
