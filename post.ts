@@ -54,7 +54,7 @@ async function run() {
         runResponse.data.run_attempt === 1
           ? 'GET /repos/{owner}/{repo}/actions/runs/{run_id}/logs'
           : 'GET /repos/{owner}/{repo}/actions/runs/{run_id}/attempts/{attempt_number}/logs',
-        attemptRequest,
+        runResponse.data.run_attempt === 1 ? runRequest : attemptRequest,
       );
       steps = jobsResponse.data.jobs[0].steps.map((step) => ({
         ...step,
