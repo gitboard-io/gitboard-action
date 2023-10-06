@@ -125,16 +125,25 @@ export async function getLogUrl(token: string): Promise<string | undefined> {
   if (token) {
     const octokit = github.getOctokit(token);
     const downloadWorkflowRunLogUrl = await downloadWorkflowRunLogs(octokit);
-    const downloadWorkflowRunAttemptLogUrl = await downloadWorkflowRunAttemptLogs(octokit);
-    const downloadJobLogsForWorkflowRunUrl = await downloadJobLogsForWorkflowRun(octokit);
-    const logUrl = downloadWorkflowRunLogUrl || downloadWorkflowRunAttemptLogUrl || downloadJobLogsForWorkflowRunUrl
-    core.info(`gitboard-action job log url: ${logUrl} from ${downloadWorkflowRunLogUrl}, ${downloadWorkflowRunAttemptLogUrl}, ${downloadJobLogsForWorkflowRunUrl}`);
+    const downloadWorkflowRunAttemptLogUrl =
+      await downloadWorkflowRunAttemptLogs(octokit);
+    const downloadJobLogsForWorkflowRunUrl =
+      await downloadJobLogsForWorkflowRun(octokit);
+    const logUrl =
+      downloadWorkflowRunLogUrl ||
+      downloadWorkflowRunAttemptLogUrl ||
+      downloadJobLogsForWorkflowRunUrl;
+    core.info(
+      `gitboard-action job log url: ${logUrl} from ${downloadWorkflowRunLogUrl}, ${downloadWorkflowRunAttemptLogUrl}, ${downloadJobLogsForWorkflowRunUrl}`,
+    );
     return logUrl;
   }
   return undefined;
 }
 
-export async function downloadWorkflowRunLogs(octokit: InstanceType<typeof GitHub>) {
+export async function downloadWorkflowRunLogs(
+  octokit: InstanceType<typeof GitHub>,
+) {
   try {
     const request = {
       owner: github.context.repo.owner,
@@ -160,7 +169,9 @@ export async function downloadWorkflowRunLogs(octokit: InstanceType<typeof GitHu
   }
 }
 
-export async function downloadWorkflowRunAttemptLogs(octokit: InstanceType<typeof GitHub>) {
+export async function downloadWorkflowRunAttemptLogs(
+  octokit: InstanceType<typeof GitHub>,
+) {
   try {
     const request = {
       owner: github.context.repo.owner,
@@ -172,7 +183,11 @@ export async function downloadWorkflowRunAttemptLogs(octokit: InstanceType<typeo
         request,
       )}`,
     );
-    const logsResponse = await octokit.rest.actions.downloadWorkflowRunAttemptLogs({ ...request, attempt_number: 1 });
+    const logsResponse =
+      await octokit.rest.actions.downloadWorkflowRunAttemptLogs({
+        ...request,
+        attempt_number: 1,
+      });
     core.info(
       `gitboard-action downloadWorkflowRunAttemptLogs response: ${JSON.stringify(
         logsResponse,
@@ -184,7 +199,9 @@ export async function downloadWorkflowRunAttemptLogs(octokit: InstanceType<typeo
   }
 }
 
-export async function downloadJobLogsForWorkflowRun(octokit: InstanceType<typeof GitHub>) {
+export async function downloadJobLogsForWorkflowRun(
+  octokit: InstanceType<typeof GitHub>,
+) {
   try {
     const request = {
       owner: github.context.repo.owner,
@@ -196,7 +213,9 @@ export async function downloadJobLogsForWorkflowRun(octokit: InstanceType<typeof
         request,
       )}`,
     );
-    const jobsResponse = await octokit.rest.actions.listJobsForWorkflowRun(request);
+    const jobsResponse = await octokit.rest.actions.listJobsForWorkflowRun(
+      request,
+    );
     core.info(
       `gitboard-action listJobsForWorkflowRun response: ${JSON.stringify(
         jobsResponse,
@@ -204,14 +223,15 @@ export async function downloadJobLogsForWorkflowRun(octokit: InstanceType<typeof
     );
     const logRequest = {
       ...request,
-      job_id: jobsResponse.data.jobs[0].id
-    }
+      job_id: jobsResponse.data.jobs[0].id,
+    };
     core.info(
       `gitboard-action downloadJobLogsForWorkflowRun request: ${JSON.stringify(
         logRequest,
       )}`,
     );
-    const logsResponse = await octokit.rest.actions.downloadJobLogsForWorkflowRun(logRequest);
+    const logsResponse =
+      await octokit.rest.actions.downloadJobLogsForWorkflowRun(logRequest);
     core.info(
       `gitboard-action downloadJobLogsForWorkflowRun response: ${JSON.stringify(
         logsResponse,
