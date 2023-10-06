@@ -14523,7 +14523,7 @@ function run() {
             const steps = yield (0, shared_1.getSteps)(token);
             yield Promise.all(usernames.map((username, index) => __awaiter(this, void 0, void 0, function* () {
                 const key = keys[index];
-                const response = yield new gitboard_api_1.GitboardApiSdk((0, shared_1.authenticatedAxios)(`https://api.gitboard.io`, key)).upsertJob({ username }, (0, shared_1.getUpsertJobBody)(username, 'pending', steps, undefined));
+                const response = yield new gitboard_api_1.GitboardApiSdk((0, shared_1.authenticatedAxios)(`https://api.gitboard.io`, key)).upsertJob({ username }, (0, shared_1.getUpsertJobBody)(username, 'pending', steps, ''));
                 core.debug(`Pre gitboard-action upsert job response status code: ${response.statusCode}`);
                 switch (response.statusCode) {
                     case 200: {

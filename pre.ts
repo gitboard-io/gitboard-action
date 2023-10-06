@@ -32,7 +32,7 @@ async function run() {
           authenticatedAxios(`https://api.gitboard.io`, key),
         ).upsertJob(
           { username },
-          getUpsertJobBody(username, 'pending', steps, undefined),
+          getUpsertJobBody(username, 'pending', steps, ''),
         );
         core.debug(
           `Pre gitboard-action upsert job response status code: ${response.statusCode}`,
