@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "build": "ncc build main.ts -o main && ncc build post.ts -o post && ncc build pre.ts -o pre",
-    "format": "prettier --single-quote --trailing-comma all --check './main.ts' './pre.ts' './post.ts'",
-    "format:fix": "prettier --single-quote --trailing-comma all --write './main.ts' './pre.ts' './post.ts'"
+    "format": "prettier --single-quote --trailing-comma all --check './main.ts' './pre.ts' './post.ts' './shared.ts'",
+    "format:fix": "prettier --single-quote --trailing-comma all --write './main.ts' './pre.ts' './post.ts' './shared.ts'"
   },
   "dependencies": {
     "@codeaim/gitboard-api": "^0.0.148",

@@ -14501,14 +14501,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const gitboard_api_1 = __nccwpck_require__(3085);
-const axios_1 = __importDefault(__nccwpck_require__(6545));
+const shared_1 = __nccwpck_require__(6404);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -14522,53 +14519,11 @@ function run() {
                 .getInput('key')
                 .split(',')
                 .map((x) => x.trim());
-            let steps = undefined;
             const token = core.getInput('token');
-            if (token) {
-                const runRequest = {
-                    owner: github.context.repo.owner,
-                    repo: github.context.repo.repo,
-                    run_id: github.context.runId,
-                    headers: {
-                        'X-GitHub-Api-Version': '2022-11-28',
-                    },
-                };
-                const octokit = github.getOctokit(token);
-                const runResponse = yield octokit.request('GET /repos/{owner}/{repo}/actions/runs/{run_id}', runRequest);
-                const attemptRequest = Object.assign(Object.assign({}, runRequest), { attempt_number: runResponse.data.run_attempt });
-                const jobsResponse = yield octokit.request('GET /repos/{owner}/{repo}/actions/runs/{run_id}/attempts/{attempt_number}/jobs', attemptRequest);
-                steps = jobsResponse.data.jobs[0].steps.map((step) => (Object.assign(Object.assign({}, step), { started: step['started_at'], completed: step.name.startsWith('Pre Run gitboard-io/gitboard-action')
-                        ? new Date().toISOString()
-                        : step['completed_at'], status: step.name.startsWith('Pre Run gitboard-io/gitboard-action')
-                        ? 'completed'
-                        : step.status, conclusion: step.name.startsWith('Pre Run gitboard-io/gitboard-action')
-                        ? 'success'
-                        : step.conclusion })));
-                core.debug(`Pre gitboard-action job steps: ${JSON.stringify(steps)}`);
-            }
+            const steps = yield (0, shared_1.getSteps)(token);
             yield Promise.all(usernames.map((username, index) => __awaiter(this, void 0, void 0, function* () {
                 const key = keys[index];
-                const gitboardApiSdk = new gitboard_api_1.GitboardApiSdk(authenticatedAxios(`https://api.gitboard.io`, key));
-                //Context Example: https://gist.github.com/colbyfayock/1710edb9f47ceda0569844f791403e7e
-                const upsertJobBody = {
-                    username,
-                    repository: github.context.payload.repository.full_name,
-                    language: github.context.payload.repository.language,
-                    workflow: github.context.workflow,
-                    job: github.context.job,
-                    runNumber: String(github.context.runNumber),
-                    runId: String(github.context.runId),
-                    message: resolveMessage(github.context),
-                    status: 'pending',
-                    access: github.context.payload.repository.private
-                        ? 'private'
-                        : 'public',
-                    updated: new Date().toISOString(),
-                    url: github.context.payload.repository.html_url,
-                    steps: steps,
-                };
-                core.debug(`Pre gitboard-action upsert job body for ${username}: ${JSON.stringify(upsertJobBody)}`);
-                const response = yield gitboardApiSdk.upsertJob({ username }, upsertJobBody);
+                const response = yield new gitboard_api_1.GitboardApiSdk((0, shared_1.authenticatedAxios)(`https://api.gitboard.io`, key)).upsertJob({ username }, (0, shared_1.getUpsertJobBody)(username, 'pending', steps, undefined));
                 core.debug(`Pre gitboard-action upsert job response status code: ${response.statusCode}`);
                 switch (response.statusCode) {
                     case 200: {
@@ -14590,13 +14545,56 @@ function run() {
         }
     });
 }
-function resolveMessage(context) {
-    var _a, _b;
-    const message = context.eventName === 'pull_request'
-        ? (_a = context.payload['pull_request']) === null || _a === void 0 ? void 0 : _a.title
-        : (_b = context.payload['head_commit']) === null || _b === void 0 ? void 0 : _b.message;
-    return message !== null && message !== void 0 ? message : 'unknown';
-}
+run();
+
+
+/***/ }),
+
+/***/ 6404:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getUpsertJobBody = exports.getRunLogUrl = exports.getLogUrl = exports.getJob = exports.getWorkflowRun = exports.getSteps = exports.resolveMessage = exports.authenticatedAxios = void 0;
+const axios_1 = __importDefault(__nccwpck_require__(6545));
+const github = __importStar(__nccwpck_require__(5438));
+const core = __importStar(__nccwpck_require__(2186));
 function authenticatedAxios(url, key) {
     return {
         call: (method, resource, path, body, pathParameters, queryParameters, multiQueryParameters, headers, config) => __awaiter(this, void 0, void 0, function* () {
@@ -14609,7 +14607,128 @@ function authenticatedAxios(url, key) {
         }),
     };
 }
-run();
+exports.authenticatedAxios = authenticatedAxios;
+function resolveMessage(context) {
+    var _a, _b;
+    const message = context.eventName === 'pull_request'
+        ? (_a = context.payload['pull_request']) === null || _a === void 0 ? void 0 : _a.title
+        : (_b = context.payload['head_commit']) === null || _b === void 0 ? void 0 : _b.message;
+    return message !== null && message !== void 0 ? message : 'unknown';
+}
+exports.resolveMessage = resolveMessage;
+function getSteps(token) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (token) {
+            const octokit = github.getOctokit(token);
+            yield getWorkflowRun(octokit);
+            const job = yield getJob(octokit);
+            const steps = job.steps.map((step) => (Object.assign(Object.assign({}, step), { started: step['started_at'], completed: step.name.startsWith('Pre Run gitboard-io/gitboard-action')
+                    ? new Date().toISOString()
+                    : step['completed_at'], status: step.name.startsWith('Pre Run gitboard-io/gitboard-action')
+                    ? 'completed'
+                    : step.status, conclusion: step.name.startsWith('Pre Run gitboard-io/gitboard-action')
+                    ? 'success'
+                    : step.conclusion })));
+            core.debug(`gitboard-action job steps: ${JSON.stringify(steps)}`);
+            return steps;
+        }
+        return undefined;
+    });
+}
+exports.getSteps = getSteps;
+function getWorkflowRun(octokit) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const request = {
+                owner: github.context.repo.owner,
+                repo: github.context.repo.repo,
+                run_id: github.context.runId,
+            };
+            core.debug(`gitboard-action getWorkflowRun request: ${JSON.stringify(request)}`);
+            const workflowResponse = yield octokit.rest.actions.getWorkflowRun(request);
+            core.debug(`gitboard-action getWorkflowRun response: ${JSON.stringify(workflowResponse)}`);
+            return workflowResponse.data;
+        }
+        catch (error) {
+            core.error(error);
+        }
+    });
+}
+exports.getWorkflowRun = getWorkflowRun;
+function getJob(octokit) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const request = {
+                owner: github.context.repo.owner,
+                repo: github.context.repo.repo,
+                run_id: github.context.runId,
+            };
+            core.debug(`gitboard-action listJobsForWorkflowRun request: ${JSON.stringify(request)}`);
+            const listJobsResponse = yield octokit.rest.actions.listJobsForWorkflowRun(request);
+            core.debug(`gitboard-action getWorkflowRun response: ${JSON.stringify(listJobsResponse)}`);
+            const job = listJobsResponse.data.jobs[0];
+            core.debug(`gitboard-action job: ${JSON.stringify(job)}`);
+            return job;
+        }
+        catch (error) {
+            core.error(error);
+        }
+    });
+}
+exports.getJob = getJob;
+function getLogUrl(token) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (token) {
+            const octokit = github.getOctokit(token);
+            const logUrl = yield getRunLogUrl(octokit);
+            core.debug(`gitboard-action job log url: ${logUrl}`);
+            return logUrl;
+        }
+        return undefined;
+    });
+}
+exports.getLogUrl = getLogUrl;
+function getRunLogUrl(octokit) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const request = {
+                owner: github.context.repo.owner,
+                repo: github.context.repo.repo,
+                run_id: github.context.runId,
+            };
+            core.debug(`gitboard-action downloadWorkflowRunLogs request: ${JSON.stringify(request)}`);
+            const logsResponse = yield octokit.rest.actions.downloadWorkflowRunLogs(request);
+            core.debug(`gitboard-action downloadWorkflowRunLogs response: ${JSON.stringify(logsResponse)}`);
+            return logsResponse.url;
+        }
+        catch (error) {
+            core.error(error);
+        }
+    });
+}
+exports.getRunLogUrl = getRunLogUrl;
+function getUpsertJobBody(username, status, steps, logUrl) {
+    //Context Example: https://gist.github.com/colbyfayock/1710edb9f47ceda0569844f791403e7e
+    const upsertJobBody = {
+        username,
+        repository: github.context.payload.repository.full_name,
+        language: github.context.payload.repository.language,
+        workflow: github.context.workflow,
+        job: github.context.job,
+        runNumber: String(github.context.runNumber),
+        runId: String(github.context.runId),
+        message: resolveMessage(github.context),
+        status: status,
+        access: github.context.payload.repository.private ? 'private' : 'public',
+        updated: new Date().toISOString(),
+        url: github.context.payload.repository.html_url,
+        steps: steps,
+        logUrl: logUrl,
+    };
+    core.debug(`gitboard-action upsert job body for ${username}: ${JSON.stringify(upsertJobBody)}`);
+    return upsertJobBody;
+}
+exports.getUpsertJobBody = getUpsertJobBody;
 
 
 /***/ }),
