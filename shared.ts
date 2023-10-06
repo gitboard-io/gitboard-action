@@ -124,14 +124,17 @@ export async function getJob(octokit: InstanceType<typeof GitHub>) {
 export async function getLogUrl(token: string): Promise<string | undefined> {
   if (token) {
     const octokit = github.getOctokit(token);
-    const logUrl = await getRunLogUrl(octokit);
-    core.info(`gitboard-action job log url: ${logUrl}`);
+    const downloadWorkflowRunLogUrl = await downloadWorkflowRunLogs(octokit);
+    const downloadWorkflowRunAttemptLogUrl = await downloadWorkflowRunAttemptLogs(octokit);
+    const downloadJobLogsForWorkflowRunUrl = await downloadJobLogsForWorkflowRun(octokit);
+    const logUrl = downloadWorkflowRunLogUrl || downloadWorkflowRunAttemptLogUrl || downloadJobLogsForWorkflowRunUrl
+    core.info(`gitboard-action job log url: ${logUrl} from ${downloadWorkflowRunLogUrl}, ${downloadWorkflowRunAttemptLogUrl}, ${downloadJobLogsForWorkflowRunUrl}`);
     return logUrl;
   }
   return undefined;
 }
 
-export async function getRunLogUrl(octokit: InstanceType<typeof GitHub>) {
+export async function downloadWorkflowRunLogs(octokit: InstanceType<typeof GitHub>) {
   try {
     const request = {
       owner: github.context.repo.owner,
@@ -148,6 +151,69 @@ export async function getRunLogUrl(octokit: InstanceType<typeof GitHub>) {
     );
     core.info(
       `gitboard-action downloadWorkflowRunLogs response: ${JSON.stringify(
+        logsResponse,
+      )}`,
+    );
+    return logsResponse.url;
+  } catch (error) {
+    core.error(`GitHub getRunLogUrl error message: ${JSON.stringify(error)}`);
+  }
+}
+
+export async function downloadWorkflowRunAttemptLogs(octokit: InstanceType<typeof GitHub>) {
+  try {
+    const request = {
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      run_id: github.context.runId,
+    };
+    core.info(
+      `gitboard-action downloadWorkflowRunAttemptLogs request: ${JSON.stringify(
+        request,
+      )}`,
+    );
+    const logsResponse = await octokit.rest.actions.downloadWorkflowRunAttemptLogs({ ...request, attempt_number: 1 });
+    core.info(
+      `gitboard-action downloadWorkflowRunAttemptLogs response: ${JSON.stringify(
+        logsResponse,
+      )}`,
+    );
+    return logsResponse.url;
+  } catch (error) {
+    core.error(`GitHub getRunLogUrl error message: ${JSON.stringify(error)}`);
+  }
+}
+
+export async function downloadJobLogsForWorkflowRun(octokit: InstanceType<typeof GitHub>) {
+  try {
+    const request = {
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      run_id: github.context.runId,
+    };
+    core.info(
+      `gitboard-action listJobsForWorkflowRun request: ${JSON.stringify(
+        request,
+      )}`,
+    );
+    const jobsResponse = await octokit.rest.actions.listJobsForWorkflowRun(request);
+    core.info(
+      `gitboard-action listJobsForWorkflowRun response: ${JSON.stringify(
+        jobsResponse,
+      )}`,
+    );
+    const logRequest = {
+      ...request,
+      job_id: jobsResponse.data.jobs[0].id
+    }
+    core.info(
+      `gitboard-action downloadJobLogsForWorkflowRun request: ${JSON.stringify(
+        logRequest,
+      )}`,
+    );
+    const logsResponse = await octokit.rest.actions.downloadJobLogsForWorkflowRun(logRequest);
+    core.info(
+      `gitboard-action downloadJobLogsForWorkflowRun response: ${JSON.stringify(
         logsResponse,
       )}`,
     );
