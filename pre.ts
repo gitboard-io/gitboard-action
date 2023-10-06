@@ -39,7 +39,7 @@ async function run() {
         );
         switch (response.statusCode) {
           case 200: {
-            console.log(
+            core.info(
               `View GitBoard.io dashboard: https://gitboard.io/${username}/dashboard`,
             );
             break;
@@ -47,15 +47,15 @@ async function run() {
           case 401:
           case 403: {
             const { message } = response.result as Error;
-            console.log(message);
+            core.error(`GitBoard.io error message: ${message}`);
             break;
           }
         }
       }),
     );
   } catch (error) {
-    console.log('Issue reporting build status to GitBoard.io');
-    console.log('GitBoard.io error message:', error);
+    core.info('Issue reporting build status to GitBoard.io');
+    core.error(`GitBoard.io error message: ${error.message}`);
   }
 }
 

@@ -89,7 +89,7 @@ export async function getWorkflowRun(octokit: InstanceType<typeof GitHub>) {
     );
     return workflowResponse.data;
   } catch (error) {
-    core.error(error);
+    core.error(`GitHub getWorkflowRun error message: ${JSON.stringify(error)}`);
   }
 }
 
@@ -117,7 +117,7 @@ export async function getJob(octokit: InstanceType<typeof GitHub>) {
     core.debug(`gitboard-action job: ${JSON.stringify(job)}`);
     return job;
   } catch (error) {
-    core.error(error);
+    core.error(`GitHub getJob error message: ${JSON.stringify(error)}`);
   }
 }
 
@@ -125,7 +125,7 @@ export async function getLogUrl(token: string): Promise<string | undefined> {
   if (token) {
     const octokit = github.getOctokit(token);
     const logUrl = await getRunLogUrl(octokit);
-    console.log(`gitboard-action job log url: ${logUrl}`);
+    core.info(`gitboard-action job log url: ${logUrl}`);
     return logUrl;
   }
   return undefined;
@@ -138,7 +138,7 @@ export async function getRunLogUrl(octokit: InstanceType<typeof GitHub>) {
       repo: github.context.repo.repo,
       run_id: github.context.runId,
     };
-    console.log(
+    core.info(
       `gitboard-action downloadWorkflowRunLogs request: ${JSON.stringify(
         request,
       )}`,
@@ -146,14 +146,14 @@ export async function getRunLogUrl(octokit: InstanceType<typeof GitHub>) {
     const logsResponse = await octokit.rest.actions.downloadWorkflowRunLogs(
       request,
     );
-    console.log(
+    core.info(
       `gitboard-action downloadWorkflowRunLogs response: ${JSON.stringify(
         logsResponse,
       )}`,
     );
     return logsResponse.url;
   } catch (error) {
-    core.error(error);
+    core.error(`GitHub getRunLogUrl error message: ${JSON.stringify(error)}`);
   }
 }
 

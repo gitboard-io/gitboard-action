@@ -14530,21 +14530,21 @@ function run() {
                 core.debug(`Post gitboard-action upsert job response status code: ${response.statusCode}`);
                 switch (response.statusCode) {
                     case 200: {
-                        console.log(`View GitBoard.io dashboard: https://gitboard.io/${username}/dashboard`);
+                        core.info(`View GitBoard.io dashboard: https://gitboard.io/${username}/dashboard`);
                         break;
                     }
                     case 401:
                     case 403: {
                         const { message } = response.result;
-                        console.log(message);
+                        core.error(`GitBoard.io error message: ${message}`);
                         break;
                     }
                 }
             })));
         }
         catch (error) {
-            console.log('Issue reporting build status to GitBoard.io');
-            console.log(`GitBoard.io error message: ${error.message}`);
+            core.info('Issue reporting build status to GitBoard.io');
+            core.error(`GitBoard.io error message: ${error.message}`);
         }
     });
 }
@@ -14653,7 +14653,7 @@ function getWorkflowRun(octokit) {
             return workflowResponse.data;
         }
         catch (error) {
-            core.error(error);
+            core.error(`GitHub getWorkflowRun error message: ${JSON.stringify(error)}`);
         }
     });
 }
@@ -14674,7 +14674,7 @@ function getJob(octokit) {
             return job;
         }
         catch (error) {
-            core.error(error);
+            core.error(`GitHub getJob error message: ${JSON.stringify(error)}`);
         }
     });
 }
@@ -14684,7 +14684,7 @@ function getLogUrl(token) {
         if (token) {
             const octokit = github.getOctokit(token);
             const logUrl = yield getRunLogUrl(octokit);
-            core.debug(`gitboard-action job log url: ${logUrl}`);
+            core.info(`gitboard-action job log url: ${logUrl}`);
             return logUrl;
         }
         return undefined;
@@ -14699,13 +14699,13 @@ function getRunLogUrl(octokit) {
                 repo: github.context.repo.repo,
                 run_id: github.context.runId,
             };
-            core.debug(`gitboard-action downloadWorkflowRunLogs request: ${JSON.stringify(request)}`);
+            core.info(`gitboard-action downloadWorkflowRunLogs request: ${JSON.stringify(request)}`);
             const logsResponse = yield octokit.rest.actions.downloadWorkflowRunLogs(request);
-            core.debug(`gitboard-action downloadWorkflowRunLogs response: ${JSON.stringify(logsResponse)}`);
+            core.info(`gitboard-action downloadWorkflowRunLogs response: ${JSON.stringify(logsResponse)}`);
             return logsResponse.url;
         }
         catch (error) {
-            core.error(error);
+            core.error(`GitHub getRunLogUrl error message: ${JSON.stringify(error)}`);
         }
     });
 }
