@@ -14594,7 +14594,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getUpsertJobBody = exports.downloadJobLogsForWorkflowRun = exports.downloadWorkflowRunAttemptLogs = exports.downloadWorkflowRunLogs = exports.getLogUrl = exports.getJob = exports.getWorkflowRun = exports.getSteps = exports.resolveMessage = exports.authenticatedAxios = void 0;
+exports.getUpsertJobBody = exports.downloadJobLogsForWorkflowRun = exports.getLogUrl = exports.getJob = exports.getWorkflowRun = exports.getSteps = exports.resolveMessage = exports.authenticatedAxios = void 0;
 const axios_1 = __importDefault(__nccwpck_require__(6545));
 const github = __importStar(__nccwpck_require__(5438));
 const core = __importStar(__nccwpck_require__(2186));
@@ -14683,57 +14683,14 @@ function getLogUrl(token) {
     return __awaiter(this, void 0, void 0, function* () {
         if (token) {
             const octokit = github.getOctokit(token);
-            const downloadWorkflowRunLogUrl = yield downloadWorkflowRunLogs(octokit);
-            const downloadWorkflowRunAttemptLogUrl = yield downloadWorkflowRunAttemptLogs(octokit);
-            const downloadJobLogsForWorkflowRunUrl = yield downloadJobLogsForWorkflowRun(octokit);
-            const logUrl = downloadWorkflowRunLogUrl ||
-                downloadWorkflowRunAttemptLogUrl ||
-                downloadJobLogsForWorkflowRunUrl;
-            core.info(`gitboard-action job log url: ${logUrl} from ${downloadWorkflowRunLogUrl}, ${downloadWorkflowRunAttemptLogUrl}, ${downloadJobLogsForWorkflowRunUrl}`);
+            const logUrl = yield downloadJobLogsForWorkflowRun(octokit);
+            core.info(`gitboard-action job log url: ${logUrl}`);
             return logUrl;
         }
         return undefined;
     });
 }
 exports.getLogUrl = getLogUrl;
-function downloadWorkflowRunLogs(octokit) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const request = {
-                owner: github.context.repo.owner,
-                repo: github.context.repo.repo,
-                run_id: github.context.runId,
-            };
-            core.info(`gitboard-action downloadWorkflowRunLogs request: ${JSON.stringify(request)}`);
-            const logsResponse = yield octokit.rest.actions.downloadWorkflowRunLogs(request);
-            core.info(`gitboard-action downloadWorkflowRunLogs response: ${JSON.stringify(logsResponse)}`);
-            return logsResponse.url;
-        }
-        catch (error) {
-            core.error(`GitHub getRunLogUrl error message: ${JSON.stringify(error)}`);
-        }
-    });
-}
-exports.downloadWorkflowRunLogs = downloadWorkflowRunLogs;
-function downloadWorkflowRunAttemptLogs(octokit) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const request = {
-                owner: github.context.repo.owner,
-                repo: github.context.repo.repo,
-                run_id: github.context.runId,
-            };
-            core.info(`gitboard-action downloadWorkflowRunAttemptLogs request: ${JSON.stringify(request)}`);
-            const logsResponse = yield octokit.rest.actions.downloadWorkflowRunAttemptLogs(Object.assign(Object.assign({}, request), { attempt_number: 1 }));
-            core.info(`gitboard-action downloadWorkflowRunAttemptLogs response: ${JSON.stringify(logsResponse)}`);
-            return logsResponse.url;
-        }
-        catch (error) {
-            core.error(`GitHub getRunLogUrl error message: ${JSON.stringify(error)}`);
-        }
-    });
-}
-exports.downloadWorkflowRunAttemptLogs = downloadWorkflowRunAttemptLogs;
 function downloadJobLogsForWorkflowRun(octokit) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -14742,13 +14699,13 @@ function downloadJobLogsForWorkflowRun(octokit) {
                 repo: github.context.repo.repo,
                 run_id: github.context.runId,
             };
-            core.info(`gitboard-action listJobsForWorkflowRun request: ${JSON.stringify(request)}`);
+            core.debug(`gitboard-action listJobsForWorkflowRun request: ${JSON.stringify(request)}`);
             const jobsResponse = yield octokit.rest.actions.listJobsForWorkflowRun(request);
-            core.info(`gitboard-action listJobsForWorkflowRun response: ${JSON.stringify(jobsResponse)}`);
+            core.debug(`gitboard-action listJobsForWorkflowRun response: ${JSON.stringify(jobsResponse)}`);
             const logRequest = Object.assign(Object.assign({}, request), { job_id: jobsResponse.data.jobs[0].id });
-            core.info(`gitboard-action downloadJobLogsForWorkflowRun request: ${JSON.stringify(logRequest)}`);
+            core.debug(`gitboard-action downloadJobLogsForWorkflowRun request: ${JSON.stringify(logRequest)}`);
             const logsResponse = yield octokit.rest.actions.downloadJobLogsForWorkflowRun(logRequest);
-            core.info(`gitboard-action downloadJobLogsForWorkflowRun response: ${JSON.stringify(logsResponse)}`);
+            core.debug(`gitboard-action downloadJobLogsForWorkflowRun response: ${JSON.stringify(logsResponse)}`);
             return logsResponse.url;
         }
         catch (error) {
