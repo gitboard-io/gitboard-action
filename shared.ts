@@ -125,7 +125,7 @@ export async function getLogUrl(token: string): Promise<string | undefined> {
   if (token) {
     const octokit = github.getOctokit(token);
     const logUrl = await getRunLogUrl(octokit);
-    core.debug(`gitboard-action job log url: ${logUrl}`);
+    console.log(`gitboard-action job log url: ${logUrl}`);
     return logUrl;
   }
   return undefined;
@@ -138,7 +138,7 @@ export async function getRunLogUrl(octokit: InstanceType<typeof GitHub>) {
       repo: github.context.repo.repo,
       run_id: github.context.runId,
     };
-    core.debug(
+    console.log(
       `gitboard-action downloadWorkflowRunLogs request: ${JSON.stringify(
         request,
       )}`,
@@ -146,7 +146,7 @@ export async function getRunLogUrl(octokit: InstanceType<typeof GitHub>) {
     const logsResponse = await octokit.rest.actions.downloadWorkflowRunLogs(
       request,
     );
-    core.debug(
+    console.log(
       `gitboard-action downloadWorkflowRunLogs response: ${JSON.stringify(
         logsResponse,
       )}`,
