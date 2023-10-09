@@ -114,9 +114,8 @@ export async function getJob(octokit: InstanceType<typeof GitHub>) {
         request,
       )}`,
     );
-    const listJobsResponse = await octokit.rest.actions.listJobsForWorkflowRun(
-      request,
-    );
+    const listJobsResponse =
+      await octokit.rest.actions.listJobsForWorkflowRun(request);
     core.debug(
       `gitboard-action getWorkflowRun response: ${JSON.stringify(
         listJobsResponse,
@@ -154,9 +153,8 @@ export async function downloadJobLogsForWorkflowRun(
         request,
       )}`,
     );
-    const jobsResponse = await octokit.rest.actions.listJobsForWorkflowRun(
-      request,
-    );
+    const jobsResponse =
+      await octokit.rest.actions.listJobsForWorkflowRun(request);
     core.debug(
       `gitboard-action listJobsForWorkflowRun response: ${JSON.stringify(
         jobsResponse,

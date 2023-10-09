@@ -16479,46 +16479,46 @@ class GitboardApiSdk {
     constructor(caller) {
         this.caller = caller;
     }
-    async handshake(headers = {}) {
+    async handshake(headers = {}, config = {}) {
         const resource = '/handshake';
         const path = `/handshake`;
-        const result = await this.caller.call('GET', resource, path, undefined, {}, {}, {}, headers);
+        const result = await this.caller.call('GET', resource, path, undefined, {}, {}, {}, headers, config);
         if (result.statusCode === 200) {
             return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
-    async bitbucketClients(headers = {}) {
+    async bitbucketClients(headers = {}, config = {}) {
         const resource = '/bitbucket';
         const path = `/bitbucket`;
-        const result = await this.caller.call('GET', resource, path, undefined, {}, {}, {}, headers);
+        const result = await this.caller.call('GET', resource, path, undefined, {}, {}, {}, headers, config);
         if (result.statusCode === 200) {
             return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
-    async bitbucketWebhook(body, headers = {}) {
+    async bitbucketWebhook(body, headers = {}, config = {}) {
         const resource = '/bitbucket/webhook';
         const path = `/bitbucket/webhook`;
-        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), {}, {}, {}, headers);
+        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), {}, {}, {}, headers, config);
         if (result.statusCode === 200) {
             return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
-    async bitbucketRedirect(params, headers = {}) {
+    async bitbucketRedirect(params, headers = {}, config = {}) {
         const resource = '/bitbucket/handshake/{handshake}';
         const path = `/bitbucket/handshake/${params.handshake}`;
-        const result = await this.caller.call('GET', resource, path, undefined, params, {}, {}, headers);
+        const result = await this.caller.call('GET', resource, path, undefined, params, {}, {}, headers, config);
         if (result.statusCode === 200) {
             return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
-    async bitbucketLinkUser(params, body, queryParameters, multiQueryParameters, headers = {}) {
+    async bitbucketLinkUser(params, body, queryParameters, multiQueryParameters, headers = {}, config = {}) {
         const resource = '/bitbucket/handshake/{handshake}';
         const path = `/bitbucket/handshake/${params.handshake}`;
-        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), params, queryParameters, multiQueryParameters, headers);
+        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), params, queryParameters, multiQueryParameters, headers, config);
         if (result.statusCode === 200) {
             return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
         }
@@ -16527,64 +16527,64 @@ class GitboardApiSdk {
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
-    async bitbucketConnect(headers = {}) {
+    async bitbucketConnect(headers = {}, config = {}) {
         const resource = '/bitbucket/connect';
         const path = `/bitbucket/connect`;
-        const result = await this.caller.call('GET', resource, path, undefined, {}, {}, {}, headers);
+        const result = await this.caller.call('GET', resource, path, undefined, {}, {}, {}, headers, config);
         if (result.statusCode === 200) {
             return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
-    async bitbucketInstall(body, headers = {}) {
+    async bitbucketInstall(body, headers = {}, config = {}) {
         const resource = '/bitbucket/install';
         const path = `/bitbucket/install`;
-        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), {}, {}, {}, headers);
+        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), {}, {}, {}, headers, config);
         if (result.statusCode === 200) {
             return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
-    async bitbucketUninstall(body, headers = {}) {
+    async bitbucketUninstall(body, headers = {}, config = {}) {
         const resource = '/bitbucket/uninstall';
         const path = `/bitbucket/uninstall`;
-        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), {}, {}, {}, headers);
+        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), {}, {}, {}, headers, config);
         if (result.statusCode === 200) {
             return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
-    async upsertFollower(body, headers = {}) {
+    async upsertFollower(body, headers = {}, config = {}) {
         const resource = '/follower';
         const path = `/follower`;
-        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), {}, {}, {}, headers);
+        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), {}, {}, {}, headers, config);
         if (result.statusCode === 201) {
             return { statusCode: 201, headers: result.headers, result: JSON.parse(result.body) };
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
-    async sendMessage(body, headers = {}) {
+    async sendMessage(body, headers = {}, config = {}) {
         const resource = '/message';
         const path = `/message`;
-        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), {}, {}, {}, headers);
+        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), {}, {}, {}, headers, config);
         if (result.statusCode === 201) {
             return { statusCode: 201, headers: result.headers, result: JSON.parse(result.body) };
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
-    async getUsers(headers = {}) {
+    async getUsers(headers = {}, config = {}) {
         const resource = '/user';
         const path = `/user`;
-        const result = await this.caller.call('GET', resource, path, undefined, {}, {}, {}, headers);
+        const result = await this.caller.call('GET', resource, path, undefined, {}, {}, {}, headers, config);
         if (result.statusCode === 200) {
             return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
-    async regenerateKey(params, headers = {}) {
+    async regenerateKey(params, headers = {}, config = {}) {
         const resource = '/user/{username}/key';
         const path = `/user/${params.username}/key`;
-        const result = await this.caller.call('POST', resource, path, undefined, params, {}, {}, headers);
+        const result = await this.caller.call('POST', resource, path, undefined, params, {}, {}, headers, config);
         if (result.statusCode === 200) {
             return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
         }
@@ -16593,10 +16593,10 @@ class GitboardApiSdk {
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
-    async updateVisibility(params, body, headers = {}) {
+    async updateVisibility(params, body, headers = {}, config = {}) {
         const resource = '/user/{username}/visibility';
         const path = `/user/${params.username}/visibility`;
-        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), params, {}, {}, headers);
+        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), params, {}, {}, headers, config);
         if (result.statusCode === 200) {
             return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
         }
@@ -16605,10 +16605,10 @@ class GitboardApiSdk {
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
-    async createDashboard(params, body, headers = {}) {
+    async createDashboard(params, body, headers = {}, config = {}) {
         const resource = '/user/{username}/dashboard';
         const path = `/user/${params.username}/dashboard`;
-        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), params, {}, {}, headers);
+        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), params, {}, {}, headers, config);
         if (result.statusCode === 200) {
             return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
         }
@@ -16617,10 +16617,10 @@ class GitboardApiSdk {
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
-    async getDashboard(params, headers = {}) {
+    async getDashboard(params, headers = {}, config = {}) {
         const resource = '/user/{username}/dashboard/{id}';
         const path = `/user/${params.username}/dashboard/${params.id}`;
-        const result = await this.caller.call('GET', resource, path, undefined, params, {}, {}, headers);
+        const result = await this.caller.call('GET', resource, path, undefined, params, {}, {}, headers, config);
         if (result.statusCode === 200) {
             return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
         }
@@ -16632,10 +16632,10 @@ class GitboardApiSdk {
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
-    async updateDashboard(params, body, headers = {}) {
+    async updateDashboard(params, body, headers = {}, config = {}) {
         const resource = '/user/{username}/dashboard/{id}';
         const path = `/user/${params.username}/dashboard/${params.id}`;
-        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), params, {}, {}, headers);
+        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), params, {}, {}, headers, config);
         if (result.statusCode === 200) {
             return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
         }
@@ -16644,10 +16644,10 @@ class GitboardApiSdk {
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
-    async deleteDashboard(params, headers = {}) {
+    async deleteDashboard(params, headers = {}, config = {}) {
         const resource = '/user/{username}/dashboard/{id}';
         const path = `/user/${params.username}/dashboard/${params.id}`;
-        const result = await this.caller.call('DELETE', resource, path, undefined, params, {}, {}, headers);
+        const result = await this.caller.call('DELETE', resource, path, undefined, params, {}, {}, headers, config);
         if (result.statusCode === 200) {
             return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
         }
@@ -16656,10 +16656,10 @@ class GitboardApiSdk {
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
-    async createSubscription(body, headers = {}) {
+    async createSubscription(body, headers = {}, config = {}) {
         const resource = '/subscribe';
         const path = `/subscribe`;
-        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), {}, {}, {}, headers);
+        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), {}, {}, {}, headers, config);
         if (result.statusCode === 200) {
             return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
         }
@@ -16668,10 +16668,10 @@ class GitboardApiSdk {
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
-    async verifySubscription(body, headers = {}) {
+    async verifySubscription(body, headers = {}, config = {}) {
         const resource = '/verify';
         const path = `/verify`;
-        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), {}, {}, {}, headers);
+        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), {}, {}, {}, headers, config);
         if (result.statusCode === 200) {
             return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
         }
@@ -16680,10 +16680,10 @@ class GitboardApiSdk {
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
-    async getUser(params, headers = {}) {
+    async getUser(params, headers = {}, config = {}) {
         const resource = '/user/{username}';
         const path = `/user/${params.username}`;
-        const result = await this.caller.call('GET', resource, path, undefined, params, {}, {}, headers);
+        const result = await this.caller.call('GET', resource, path, undefined, params, {}, {}, headers, config);
         if (result.statusCode === 200) {
             return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
         }
@@ -16692,10 +16692,10 @@ class GitboardApiSdk {
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
-    async deleteUser(params, headers = {}) {
+    async deleteUser(params, headers = {}, config = {}) {
         const resource = '/user/{username}';
         const path = `/user/${params.username}`;
-        const result = await this.caller.call('DELETE', resource, path, undefined, params, {}, {}, headers);
+        const result = await this.caller.call('DELETE', resource, path, undefined, params, {}, {}, headers, config);
         if (result.statusCode === 200) {
             return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
         }
@@ -16704,10 +16704,10 @@ class GitboardApiSdk {
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
-    async upsertJob(params, body, headers = {}) {
+    async upsertJob(params, body, headers = {}, config = {}) {
         const resource = '/job/{username}';
         const path = `/job/${params.username}`;
-        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), params, {}, {}, headers);
+        const result = await this.caller.call('POST', resource, path, JSON.stringify(body), params, {}, {}, headers, config);
         if (result.statusCode === 200) {
             return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
         }
@@ -16719,19 +16719,19 @@ class GitboardApiSdk {
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
-    async getJobs(params, queryParameters, multiQueryParameters, headers = {}) {
+    async getJobs(params, queryParameters, multiQueryParameters, headers = {}, config = {}) {
         const resource = '/job/{username}';
         const path = `/job/${params.username}`;
-        const result = await this.caller.call('GET', resource, path, undefined, params, queryParameters, multiQueryParameters, headers);
+        const result = await this.caller.call('GET', resource, path, undefined, params, queryParameters, multiQueryParameters, headers, config);
         if (result.statusCode === 200) {
             return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
-    async getJob(params, headers = {}) {
+    async getJob(params, headers = {}, config = {}) {
         const resource = '/job/{username}/{id}';
         const path = `/job/${params.username}/${params.id}`;
-        const result = await this.caller.call('GET', resource, path, undefined, params, {}, {}, headers);
+        const result = await this.caller.call('GET', resource, path, undefined, params, {}, {}, headers, config);
         if (result.statusCode === 200) {
             return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
         }
@@ -16740,10 +16740,10 @@ class GitboardApiSdk {
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
-    async deleteJob(params, headers = {}) {
+    async deleteJob(params, headers = {}, config = {}) {
         const resource = '/job/{username}/{id}';
         const path = `/job/${params.username}/${params.id}`;
-        const result = await this.caller.call('DELETE', resource, path, undefined, params, {}, {}, headers);
+        const result = await this.caller.call('DELETE', resource, path, undefined, params, {}, {}, headers, config);
         if (result.statusCode === 200) {
             return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
         }
@@ -16752,10 +16752,10 @@ class GitboardApiSdk {
         }
         throw new Error(`Unknown status ${result.statusCode} returned from ${path}`);
     }
-    async getJobHistories(params, queryParameters, multiQueryParameters, headers = {}) {
+    async getJobHistories(params, queryParameters, multiQueryParameters, headers = {}, config = {}) {
         const resource = '/job/{username}/{id}/history';
         const path = `/job/${params.username}/${params.id}/history`;
-        const result = await this.caller.call('GET', resource, path, undefined, params, queryParameters, multiQueryParameters, headers);
+        const result = await this.caller.call('GET', resource, path, undefined, params, queryParameters, multiQueryParameters, headers, config);
         if (result.statusCode === 200) {
             return { statusCode: 200, headers: result.headers, result: JSON.parse(result.body) };
         }
