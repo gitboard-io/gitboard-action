@@ -23,7 +23,7 @@ async function run() {
       .map((x) => x.trim());
 
     const token = core.getInput('token');
-    const steps = await getSteps(token);
+    const steps = await getSteps(token, true);
 
     await Promise.all(
       usernames.map(async (username, index) => {

@@ -11839,7 +11839,7 @@ function run() {
                 .split(',')
                 .map((x) => x.trim());
             const token = core.getInput('token');
-            const steps = yield (0, shared_1.getSteps)(token);
+            const steps = yield (0, shared_1.getSteps)(token, true);
             yield Promise.all(usernames.map((username, index) => __awaiter(this, void 0, void 0, function* () {
                 const key = keys[index];
                 const response = yield new gitboard_api_1.GitboardApiSdk((0, shared_1.authenticatedAxios)(`https://api.gitboard.io`, key)).upsertJob({ username }, (0, shared_1.getUpsertJobBody)(username, 'pending', steps, ''));
@@ -11935,17 +11935,17 @@ function resolveMessage(context) {
     return message !== null && message !== void 0 ? message : 'unknown';
 }
 exports.resolveMessage = resolveMessage;
-function getSteps(token) {
+function getSteps(token, pre) {
     return __awaiter(this, void 0, void 0, function* () {
         if (token) {
             const octokit = github.getOctokit(token);
             yield getWorkflowRun(octokit);
             const job = yield getJob(octokit);
-            const steps = job.steps.map((step) => (Object.assign(Object.assign({}, step), { started: step['started_at'], completed: step.name.startsWith('Pre Run gitboard-io/gitboard-action') || step.name.startsWith('Post Run gitboard-io/gitboard-action')
+            const steps = job.steps.map((step) => (Object.assign(Object.assign({}, step), { started: step['started_at'], completed: step.name.startsWith(`${pre ? 'Pre' : 'Post'} Run gitboard-io/gitboard-action`)
                     ? new Date().toISOString()
-                    : step['completed_at'], status: step.name.startsWith('Pre Run gitboard-io/gitboard-action') || step.name.startsWith('Post Run gitboard-io/gitboard-action')
+                    : step['completed_at'], status: step.name.startsWith(`${pre ? 'Pre' : 'Post'} Run gitboard-io/gitboard-action`)
                     ? 'completed'
-                    : step.status, conclusion: step.name.startsWith('Pre Run gitboard-io/gitboard-action') || step.name.startsWith('Post Run gitboard-io/gitboard-action')
+                    : step.status, conclusion: step.name.startsWith(`${pre ? 'Pre' : 'Post'} Run gitboard-io/gitboard-action`)
                     ? 'success'
                     : step.conclusion })));
             core.debug(`gitboard-action job steps: ${JSON.stringify(steps)}`);

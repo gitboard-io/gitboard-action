@@ -30,7 +30,7 @@ async function run() {
     core.debug(`Post gitboard-action input status: ${JSON.stringify(status)}`);
 
     const token = core.getInput('token');
-    const steps = await getSteps(token);
+    const steps = await getSteps(token, false);
     const logUrl = await getLogUrl(token);
 
     await Promise.all(
