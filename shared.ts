@@ -55,15 +55,21 @@ export async function getSteps(token: string): Promise<any[] | undefined> {
     const steps = job.steps.map((step) => ({
       ...step,
       started: step['started_at'],
-      completed: step.name.startsWith('Pre Run gitboard-io/gitboard-action') || step.name.startsWith('Post Run gitboard-io/gitboard-action')
-        ? new Date().toISOString()
-        : step['completed_at'],
-      status: step.name.startsWith('Pre Run gitboard-io/gitboard-action') || step.name.startsWith('Post Run gitboard-io/gitboard-action')
-        ? 'completed'
-        : step.status,
-      conclusion: step.name.startsWith('Pre Run gitboard-io/gitboard-action') || step.name.startsWith('Post Run gitboard-io/gitboard-action')
-        ? 'success'
-        : step.conclusion,
+      completed:
+        step.name.startsWith('Pre Run gitboard-io/gitboard-action') ||
+        step.name.startsWith('Post Run gitboard-io/gitboard-action')
+          ? new Date().toISOString()
+          : step['completed_at'],
+      status:
+        step.name.startsWith('Pre Run gitboard-io/gitboard-action') ||
+        step.name.startsWith('Post Run gitboard-io/gitboard-action')
+          ? 'completed'
+          : step.status,
+      conclusion:
+        step.name.startsWith('Pre Run gitboard-io/gitboard-action') ||
+        step.name.startsWith('Post Run gitboard-io/gitboard-action')
+          ? 'success'
+          : step.conclusion,
     }));
     core.debug(`gitboard-action job steps: ${JSON.stringify(steps)}`);
     return steps;
