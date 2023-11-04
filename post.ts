@@ -15,6 +15,7 @@ async function run() {
         github.context,
       )}`,
     );
+    const environment = core.getInput('environment') ?? 'prod';
     const usernames = core
       .getInput('username')
       .split(',')
@@ -37,7 +38,7 @@ async function run() {
       usernames.map(async (username, index) => {
         const key = keys[index];
         const response = await new GitboardApiSdk(
-          authenticatedAxios(`https://api.gitboard.io`, key),
+          authenticatedAxios(environment === 'dev' ? 'https://dev.api.gitboard.io' : `https://api.gitboard.io`, key),
         ).upsertJob(
           { username },
           getUpsertJobBody(username, status, steps, logUrl),
