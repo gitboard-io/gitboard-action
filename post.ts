@@ -38,7 +38,7 @@ async function run() {
       usernames.map(async (username, index) => {
         const key = keys[index];
         const response = await new GitboardApiSdk(
-          authenticatedAxios(environment === 'dev' ? 'https://dev.api.gitboard.io' : `https://api.gitboard.io`, key),
+          authenticatedAxios(environment === 'dev' ? 'https://api.dev.gitboard.io' : `https://api.gitboard.io`, key),
         ).upsertJob(
           { username },
           getUpsertJobBody(username, status, steps, logUrl),
