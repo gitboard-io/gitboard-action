@@ -14528,7 +14528,7 @@ function run() {
             const logUrl = yield (0, shared_1.getLogUrl)(token);
             yield Promise.all(usernames.map((username, index) => __awaiter(this, void 0, void 0, function* () {
                 const key = keys[index];
-                const response = yield new gitboard_api_1.GitboardApiSdk((0, shared_1.authenticatedAxios)(environment === 'dev' ? 'https://dev.api.gitboard.io' : `https://api.gitboard.io`, key)).upsertJob({ username }, (0, shared_1.getUpsertJobBody)(username, status, steps, logUrl));
+                const response = yield new gitboard_api_1.GitboardApiSdk((0, shared_1.authenticatedAxios)(environment === 'dev' ? 'https://api.dev.gitboard.io' : `https://api.gitboard.io`, key)).upsertJob({ username }, (0, shared_1.getUpsertJobBody)(username, status, steps, logUrl));
                 core.debug(`Post gitboard-action upsert job response status code: ${response.statusCode}`);
                 switch (response.statusCode) {
                     case 200: {
