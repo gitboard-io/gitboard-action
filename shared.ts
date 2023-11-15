@@ -204,6 +204,10 @@ export function getUpsertJobBody(
     url: github.context.payload.repository.html_url,
     steps: steps,
     logUrl: logUrl,
+    commit: {
+      ref: github.context.ref,
+      sha: github.context.sha,
+    }
   };
   core.debug(
     `gitboard-action upsert job body for ${username}: ${JSON.stringify(
