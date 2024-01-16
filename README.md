@@ -1,3 +1,5 @@
+>  Note that this action is no longer required to interact with gitboard.io. We now have a Github App that allows a direct connection.
+
 # Update GitBoard.io Dashboard action
 
 [GitBoard.io](https://gitboard.io/) a real time build status dashboard for GitHub Actions.
